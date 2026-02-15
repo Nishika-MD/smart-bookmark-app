@@ -217,18 +217,33 @@ export default function Home() {
       </div>
 
       <style jsx>{`
-       .welcomeText {
+   .welcomeText {
   font-size: 3rem;
   font-weight: 900;
-  background: linear-gradient(90deg, #e0f2fe, #0ea5c6, #e0f2fe);
-  background-size: 200% auto;
+  letter-spacing: 1px;
+
+  /* dark blue gradient shine */
+  background: linear-gradient(
+    90deg,
+    #0b3c5d,
+    #0ea5c6,
+    #083a66,
+    #0ea5c6,
+    #0b3c5d
+  );
+
+  background-size: 300% auto;
   -webkit-background-clip: text;
   color: transparent;
-  animation: shine 4s linear infinite;
+
+  animation: darkBlueShine 5s linear infinite;
+
+  /* premium glow */
   text-shadow:
-    0 0 10px rgba(14,165,198,0.8),
-    0 0 25px rgba(14,165,198,0.4);
+    0 0 10px rgba(14,165,198,0.7),
+    0 0 25px rgba(8,58,102,0.5);
 }
+
 
 
         @keyframes shine {

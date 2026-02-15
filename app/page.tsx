@@ -11,36 +11,31 @@ export default function Home() {
   const [search, setSearch] = useState("");
   const [dark, setDark] = useState(false);
 
-  // get user
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => {
-      setUser(data.user);
+    supabase.auth.getSession().then(({ data }) => {
+      setUser(data.session?.user);
     });
   }, []);
 
-  // fetch bookmarks
   const fetchBookmarks = async () => {
+    if (!user) return;
+
     const { data } = await supabase
       .from("bookmarks")
       .select("*")
+      .eq("user_id", user.id)
       .order("created_at", { ascending: false });
 
     setBookmarks(data || []);
   };
 
   useEffect(() => {
-    if (user) fetchBookmarks();
+    if (user?.id) fetchBookmarks();
   }, [user]);
 
   const addBookmark = async () => {
     if (!title || !url) return;
-
-    await supabase.from("bookmarks").insert({
-      title,
-      url,
-      user_id: user.id,
-    });
-
+    await supabase.from("bookmarks").insert([{ title, url, user_id: user.id }]);
     setTitle("");
     setUrl("");
     fetchBookmarks();
@@ -57,175 +52,212 @@ export default function Home() {
   };
 
   const filtered = bookmarks.filter((b) =>
-    b.title.toLowerCase().includes(search.toLowerCase())
+    b.title?.toLowerCase().includes(search.toLowerCase())
   );
 
-  const name =
-    user?.user_metadata?.full_name ||
-    user?.user_metadata?.name ||
-    user?.email?.split("@")[0];
+  const inputStyle =
+    "px-4 py-3 rounded-lg border w-full outline-none transition placeholder-gray-500 " +
+    (dark
+      ? "bg-white/5 text-white border-white/10"
+      : "bg-white/80 text-gray-900 border-gray-300");
 
-  /* ================= LOGIN SCREEN ================= */
-
+  // ⭐ LOGIN PAGE
   if (!user) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-200 to-slate-300">
+      <div className="h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-[#083A66] via-[#0B5E73] to-[#062A3A]">
 
-        <div className="bg-white rounded-3xl shadow-2xl px-10 py-12 text-center w-[360px]">
+        {/* glow */}
+        <div className="glow glow1"></div>
+        <div className="glow glow2"></div>
 
-          <div className="w-20 h-20 mx-auto rounded-full bg-gradient-to-br from-slate-700 to-slate-900 flex items-center justify-center text-white text-3xl shadow-lg">
-            📚
-          </div>
+        {/* lighter card for contrast */}
+        <div className="backdrop-blur-xl bg-white/15 border border-white/30 shadow-2xl rounded-3xl p-10 text-center space-y-6 text-white max-w-md animate-fadeIn">
 
-          <h2 className="mt-6 text-2xl font-bold text-slate-800">
-            Welcome Back
-          </h2>
+          <img
+            src="https://cdn-icons-png.flaticon.com/512/5968/5968756.png"
+            className="w-16 mx-auto drop-shadow-lg"
+          />
 
-          <p className="text-slate-500 mb-8 text-sm">
-            Sign in to manage your bookmarks
+          <h1 className="text-3xl font-bold tracking-wide">
+            Smart Bookmark
+          </h1>
+
+          <p className="text-sm opacity-90">
+            Capture ideas. Organize knowledge.
           </p>
 
           <button
             onClick={() =>
               supabase.auth.signInWithOAuth({ provider: "google" })
             }
-            className="w-full flex items-center justify-center gap-3 border border-slate-300 py-3 rounded-lg shadow-sm hover:shadow-md hover:bg-slate-50 transition"
+            className="flex items-center justify-center gap-3 bg-white text-gray-800 px-6 py-3 rounded-xl font-semibold hover:scale-105 transition shadow-lg w-full"
           >
             <img
-              src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
-              className="w-5"
+              src="https://developers.google.com/identity/images/g-logo.png"
+              className="w-5 h-5"
             />
-            <span className="font-semibold text-slate-700">
-              Continue with Google
-            </span>
+            Continue with Google
           </button>
         </div>
       </div>
     );
   }
 
-  /* ================= MAIN APP ================= */
-
   return (
     <div
-      className={`min-h-screen flex items-center justify-center transition ${
+      className={`min-h-screen flex items-center justify-center relative overflow-hidden ${
         dark
-          ? "bg-slate-900"
-          : "bg-gradient-to-br from-slate-200 to-slate-300"
+          ? "bg-gradient-to-br from-[#020617] via-[#083A66] to-[#031B2F]"
+          : "bg-gradient-to-br from-[#0B5E73] via-[#0E7C91] to-[#083A66]"
       }`}
     >
+      {/* glow */}
+      <div className="glow glow1"></div>
+      <div className="glow glow2"></div>
+
       <div className="w-full max-w-xl px-4">
 
-        <h1 className="text-4xl font-extrabold text-center text-slate-800 mb-2">
-          Smart Bookmark
-        </h1>
+        {/* CARD (lighter for contrast) */}
+        <div
+          className={`rounded-3xl p-10 space-y-8 backdrop-blur-xl border shadow-xl ${
+            dark
+              ? "bg-[#083A66]/60 border-white/10 text-white shadow-[0_0_40px_rgba(14,165,198,0.35)]"
+              : "bg-[#CFEFFF]/85 border-white/40 text-gray-900 shadow-[0_0_40px_rgba(14,165,198,0.25)]"
+          }`}
+        >
 
-        <p className="text-center text-slate-500 mb-8">
-          Organize your web smarter
-        </p>
-
-        <div className="bg-white rounded-3xl shadow-xl p-8">
-
-          {/* header */}
-          <div className="flex justify-between items-center bg-slate-100 px-5 py-4 rounded-xl mb-6">
-            <h2 className="font-semibold text-slate-700">
-              Welcome <span className="text-slate-900">{name}</span>
-            </h2>
-
-            <div className="flex gap-2">
-              <button
-                onClick={() => setDark(!dark)}
-                className="px-3 py-1 rounded-md bg-slate-400 text-white text-sm"
-              >
-                {dark ? "Light" : "Dark"}
-              </button>
-
-              <button
-                onClick={logout}
-                className="px-3 py-1 rounded-md bg-slate-800 text-white text-sm"
-              >
-                Logout
-              </button>
-            </div>
+          <div>
+            <h1 className="welcomeText">Welcome</h1>
+            <p className={dark ? "text-white/80" : "text-[#083A66]"}>
+              {user.email}
+            </p>
           </div>
 
-          {/* inputs */}
-          <div className="flex gap-3 mb-4">
+          <div className="flex gap-3">
+            <button
+              onClick={() => setDark(!dark)}
+              className="px-4 py-2 rounded-lg bg-[#0EA5C6] text-white hover:bg-[#083A66]"
+            >
+              {dark ? "Light" : "Dark"}
+            </button>
+
+            <button
+              onClick={logout}
+              className="px-4 py-2 rounded-lg bg-rose-500 text-white hover:bg-rose-600"
+            >
+              Logout
+            </button>
+          </div>
+
+          <div className="flex flex-col sm:flex-row gap-4">
             <input
-              placeholder="Bookmark title"
+              placeholder="Title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="flex-1 px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-slate-500 outline-none"
+              className={inputStyle}
             />
 
             <input
-              placeholder="https://example.com"
+              placeholder="URL"
               value={url}
               onChange={(e) => setUrl(e.target.value)}
-              className="flex-1 px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-slate-500 outline-none"
+              className={inputStyle}
             />
 
             <button
               onClick={addBookmark}
-              className="bg-slate-800 text-white px-6 rounded-lg hover:bg-slate-700 transition"
+              className="bg-[#0EA5C6] text-white px-6 py-3 rounded-lg hover:bg-[#083A66]"
             >
               Add
             </button>
           </div>
 
-          {/* search */}
-          <input
-            placeholder="Search bookmarks..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full px-4 py-3 mb-6 rounded-lg border border-slate-300 focus:ring-2 focus:ring-slate-500 outline-none"
-          />
+          <div className="relative">
+            <input
+              placeholder="Search bookmarks..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className={`${inputStyle} pl-10`}
+            />
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#0EA5C6]">
+              🔍
+            </span>
+          </div>
 
-          {/* bookmarks */}
           <div className="space-y-3">
             {filtered.map((b) => (
               <div
                 key={b.id}
-                className="flex justify-between items-center bg-slate-50 px-4 py-3 rounded-lg hover:shadow transition"
+                className={`flex justify-between items-center px-4 py-3 rounded-xl ${
+                  dark ? "bg-white/10" : "bg-white/90"
+                }`}
               >
-                <div className="flex items-center gap-3">
-                  <img
-                    src={`https://www.google.com/s2/favicons?domain=${b.url}`}
-                    className="w-5 h-5"
-                  />
-                  <a
-                    href={b.url}
-                    target="_blank"
-                    className="font-medium text-slate-700 hover:underline"
-                  >
-                    {b.title}
-                  </a>
-                </div>
+                <a
+                  href={b.url}
+                  target="_blank"
+                  className={`font-semibold ${
+                    dark ? "text-white" : "text-[#083A66]"
+                  }`}
+                >
+                  {b.title}
+                </a>
 
-                <div className="flex gap-4 text-sm">
-                  <button
-                    onClick={() => navigator.clipboard.writeText(b.url)}
-                    className="text-slate-500 hover:text-slate-800"
-                  >
-                    Copy
-                  </button>
-
-                  <button
-                    onClick={() => deleteBookmark(b.id)}
-                    className="text-red-500"
-                  >
-                    Delete
-                  </button>
-                </div>
+                <button
+                  onClick={() => deleteBookmark(b.id)}
+                  className="text-rose-500 font-medium"
+                >
+                  Delete
+                </button>
               </div>
             ))}
           </div>
 
         </div>
       </div>
+
+      <style jsx>{`
+        .welcomeText {
+          font-size: 3rem;
+          font-weight: 800;
+          background: linear-gradient(90deg, #ffffff, #9feaff);
+          -webkit-background-clip: text;
+          color: transparent;
+        }
+
+        .glow {
+          position: absolute;
+          width: 420px;
+          height: 420px;
+          border-radius: 50%;
+          filter: blur(140px);
+          opacity: 0.4;
+        }
+
+        .glow1 {
+          background: rgba(14,165,198,0.5);
+          top: -120px;
+          left: -120px;
+        }
+
+        .glow2 {
+          background: rgba(159,234,255,0.5);
+          bottom: -140px;
+          right: -120px;
+        }
+
+        .animate-fadeIn {
+          animation: fadeIn 1s ease;
+        }
+
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(25px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
     </div>
   );
 }
+
 
 
 

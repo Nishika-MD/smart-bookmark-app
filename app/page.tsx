@@ -69,7 +69,7 @@ export default function Home() {
 
   if (!user) {
     return (
-      <div className="h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-[#9FEAFF] via-[#67D6F0] to-[#1FA2BF]
+      <div className="h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-[#9FEAFF] via-[#38CFEA] to-[#0EA5C6]
 ">
 
         <div className="glow glow1"></div>

@@ -11,12 +11,14 @@ export default function Home() {
   const [search, setSearch] = useState("");
   const [dark, setDark] = useState(false);
 
+  // get user session
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
       setUser(data.session?.user);
     });
   }, []);
 
+  // fetch bookmarks
   const fetchBookmarks = async () => {
     if (!user) return;
 
@@ -67,11 +69,11 @@ export default function Home() {
     return (
       <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-[#083A66] via-[#0E7490] to-[#031B2F]">
 
-        {/* glowing lights */}
+        {/* glow lights */}
         <div className="glow glow1"></div>
         <div className="glow glow2"></div>
 
-        <div className="loginCard backdrop-blur-xl bg-white/15 border border-white/30 shadow-2xl rounded-3xl p-10 text-center space-y-6 text-white max-w-md animate-fadeIn">
+        <div className="loginCard relative z-10 backdrop-blur-xl bg-white/15 border border-white/30 shadow-2xl rounded-3xl p-10 text-center space-y-6 text-white max-w-md animate-fadeIn">
 
           <img
             src="https://cdn-icons-png.flaticon.com/512/5968/5968756.png"
@@ -113,7 +115,7 @@ export default function Home() {
           : "bg-gradient-to-br from-[#0E7490] via-[#0B5E73] to-[#083A66]"
       }`}
     >
-      {/* animated glow lights */}
+      {/* glow lights */}
       <div className="glow glow1"></div>
       <div className="glow glow2"></div>
 
@@ -121,10 +123,10 @@ export default function Home() {
 
         {/* GLASS CARD */}
         <div
-          className={`cardGloss relative rounded-3xl p-10 space-y-8 backdrop-blur-xl border shadow-xl ${
+          className={`cardGloss relative z-10 rounded-3xl p-10 space-y-8 backdrop-blur-xl border shadow-xl ${
             dark
-              ? "bg-[#083A66]/60 border-white/10 text-white shadow-[0_0_50px_rgba(14,165,198,0.45)]"
-              : "bg-[#CFEFFF]/90 border-white/40 text-gray-900 shadow-[0_0_50px_rgba(14,165,198,0.35)]"
+              ? "bg-[#083A66]/60 border-white/10 text-white shadow-[0_0_60px_rgba(14,165,198,0.45)]"
+              : "bg-[#CFEFFF]/90 border-white/40 text-gray-900 shadow-[0_0_60px_rgba(14,165,198,0.35)]"
           }`}
         >
 
@@ -222,36 +224,38 @@ export default function Home() {
         </div>
       </div>
 
-      {/* ================= STYLES ================= */}
+      {/* ================= CSS ================= */}
       <style jsx>{`
 
-        /* Welcome Shine */
+        /* welcome shine */
         .welcomeText {
           font-size: 3rem;
           font-weight: 900;
-          background: linear-gradient(90deg, #ffffff, #9feaff, #ffffff);
+          background: linear-gradient(90deg, #ffffff, #7dd3fc, #ffffff);
           background-size: 200% auto;
           -webkit-background-clip: text;
           color: transparent;
           animation: shineMove 4s linear infinite;
-          text-shadow: 0 0 18px rgba(159,234,255,0.35);
+          text-shadow:
+            0 0 12px rgba(125,211,252,0.7),
+            0 0 30px rgba(14,165,198,0.45);
         }
 
         @keyframes shineMove {
-          to {
-            background-position: 200% center;
-          }
+          to { background-position: 200% center; }
         }
 
-        /* Floating glow */
+        /* glow lights */
         .glow {
           position: absolute;
           width: 420px;
           height: 420px;
           border-radius: 50%;
           filter: blur(140px);
-          opacity: 0.45;
+          opacity: 0.5;
           animation: floatGlow 8s ease-in-out infinite alternate;
+          pointer-events: none;   /* ⭐ prevents blocking clicks */
+          z-index: 0;
         }
 
         .glow1 {
@@ -271,7 +275,7 @@ export default function Home() {
           to { transform: translateY(40px); }
         }
 
-        /* Card gloss reflection */
+        /* glass shine reflection */
         .cardGloss::before {
           content: "";
           position: absolute;
@@ -291,7 +295,7 @@ export default function Home() {
         }
 
         .loginCard {
-          box-shadow: 0 0 60px rgba(14,165,198,0.25);
+          box-shadow: 0 0 70px rgba(14,165,198,0.35);
         }
 
         .animate-fadeIn {
@@ -306,6 +310,7 @@ export default function Home() {
     </div>
   );
 }
+
 
 
 

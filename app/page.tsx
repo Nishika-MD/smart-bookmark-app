@@ -17,28 +17,43 @@ export default function Home() {
     });
   }, []);
 
+  // FETCH BOOKMARKS
   const fetchBookmarks = async () => {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from("bookmarks")
       .select("*")
       .order("created_at", { ascending: false });
 
-    setBookmarks(data || []);
+    if (!error) setBookmarks(data || []);
   };
 
   useEffect(() => {
     if (user) fetchBookmarks();
   }, [user]);
 
+  // ADD BOOKMARK
   const addBookmark = async () => {
-    if (!title || !url) return;
-    await supabase.from("bookmarks").insert({
+    if (!title || !url) return alert("Enter title & URL");
+
+    const { error } = await supabase.from("bookmarks").insert({
       title,
       url,
       user_id: user.id,
     });
+
+    if (error) {
+      alert(error.message);
+      return;
+    }
+
     setTitle("");
     setUrl("");
+    fetchBookmarks();
+  };
+
+  // DELETE BOOKMARK
+  const deleteBookmark = async (id: string) => {
+    await supabase.from("bookmarks").delete().eq("id", id);
     fetchBookmarks();
   };
 
@@ -47,28 +62,29 @@ export default function Home() {
     location.reload();
   };
 
+  // SEARCH
+  const filtered = bookmarks.filter((b) =>
+    b.title?.toLowerCase().includes(search.toLowerCase())
+  );
+
   const inputStyle =
     "px-4 py-3 rounded-lg border w-full outline-none transition placeholder-opacity-100 " +
     (dark
-      ? "bg-white/5 text-white border-white/10 placeholder-gray-400 focus:ring-2 focus:ring-[#6B90A8]"
-      : "bg-white/85 text-gray-900 border-gray-300 placeholder-gray-500 focus:ring-2 focus:ring-[#135E8A]");
+      ? "bg-white/5 text-white border-white/10 placeholder-gray-400"
+      : "bg-white text-gray-900 border-gray-300 placeholder-gray-500");
 
-  // 🌟 SIGN-IN PAGE (CREATIVE)
+  // ⭐ CREATIVE SIGN-IN PAGE
   if (!user) {
     return (
-      <div className="h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-[#0A2540] via-[#135E8A] to-[#0E3A5D]">
-
-        {/* glowing lights */}
-        <div className="absolute glow glow1"></div>
-        <div className="absolute glow glow2"></div>
+      <div className="h-screen flex items-center justify-center bg-gradient-to-br from-[#0A2540] via-[#135E8A] to-[#0E3A5D]">
 
         <div className="backdrop-blur-xl bg-white/10 border border-white/20 shadow-2xl rounded-3xl p-10 text-center space-y-6 text-white max-w-md">
 
           <h1 className="text-3xl font-bold">Smart Bookmark</h1>
 
-          <p className="text-sm opacity-90">
-            “Organize your knowledge.  
-            Save what matters.  
+          <p className="text-sm opacity-90 leading-relaxed">
+            “Organize your knowledge.<br/>
+            Save what matters.<br/>
             Build your digital memory.”
           </p>
 
@@ -76,9 +92,13 @@ export default function Home() {
             onClick={() =>
               supabase.auth.signInWithOAuth({ provider: "google" })
             }
-            className="bg-white text-[#0A2540] px-6 py-3 rounded-xl font-semibold hover:scale-105 transition shadow-lg"
+            className="flex items-center justify-center gap-3 bg-white text-gray-800 px-6 py-3 rounded-xl font-semibold hover:scale-105 transition shadow-lg w-full"
           >
-            Sign in with Google
+            <img
+              src="https://developers.google.com/identity/images/g-logo.png"
+              className="w-5 h-5"
+            />
+            Continue with Google
           </button>
         </div>
       </div>
@@ -87,54 +107,42 @@ export default function Home() {
 
   return (
     <div
-      className={`min-h-screen flex items-center justify-center relative overflow-hidden ${
+      className={`min-h-screen flex items-center justify-center ${
         dark
           ? "bg-gradient-to-br from-[#0A2540] via-[#0E3A5D] to-[#020617]"
           : "bg-gradient-to-br from-[#E6F2F7] via-[#DCEFF6] to-[#F8FDFF]"
       }`}
     >
-      {/* aqua glow */}
-      <div className="absolute glow glow1"></div>
-      <div className="absolute glow glow2"></div>
+      <div className="w-full max-w-xl px-4">
 
-      <div className="w-full max-w-xl px-4 relative">
+        <div className="rounded-3xl p-10 space-y-8 backdrop-blur-xl border bg-white/80 shadow-xl">
 
-        <div
-          className={`relative rounded-3xl p-10 space-y-8 backdrop-blur-xl border transition ${
-            dark
-              ? "bg-white/5 border-white/10 shadow-[0_30px_80px_rgba(19,94,138,0.35)] text-white"
-              : "bg-white/80 border-white/60 shadow-[0_30px_80px_rgba(19,94,138,0.18)] text-gray-900"
-          }`}
-        >
-
-          {/* 🌟 Animated Welcome */}
-          <div className="space-y-3 pb-3 border-b border-white/20">
-            <h1 className="welcomeText">
+          {/* WELCOME */}
+          <div>
+            <h1 className="text-5xl font-extrabold text-[#0A2540]">
               Welcome
             </h1>
-
-            <p className={`${dark ? "text-[#B8CAD6]" : "text-[#0E3A5D]"} text-lg`}>
-              {user.email}
-            </p>
+            <p className="text-lg text-[#135E8A]">{user.email}</p>
           </div>
 
+          {/* BUTTONS */}
           <div className="flex gap-3">
             <button
               onClick={() => setDark(!dark)}
-              className="px-4 py-2 rounded-lg bg-[#135E8A] text-white hover:bg-[#0E3A5D] shadow-md transition"
+              className="px-4 py-2 rounded-lg bg-[#135E8A] text-white hover:bg-[#0E3A5D] shadow-md"
             >
               {dark ? "Light" : "Dark"}
             </button>
 
             <button
               onClick={logout}
-              className="px-4 py-2 rounded-lg bg-rose-500 text-white hover:bg-rose-600 shadow-md transition"
+              className="px-4 py-2 rounded-lg bg-rose-500 text-white hover:bg-rose-600 shadow-md"
             >
               Logout
             </button>
           </div>
 
-          {/* inputs */}
+          {/* INPUTS */}
           <div className="flex flex-col sm:flex-row gap-4">
             <input
               placeholder="Title"
@@ -152,13 +160,13 @@ export default function Home() {
 
             <button
               onClick={addBookmark}
-              className="bg-[#135E8A] text-white px-6 py-3 rounded-lg hover:bg-[#0E3A5D] shadow-lg transition"
+              className="bg-[#135E8A] text-white px-6 py-3 rounded-lg hover:bg-[#0E3A5D] shadow-lg"
             >
               Add
             </button>
           </div>
 
-          {/* search */}
+          {/* SEARCH */}
           <div className="relative">
             <input
               placeholder="Search bookmarks..."
@@ -170,56 +178,34 @@ export default function Home() {
               🔍
             </span>
           </div>
+
+          {/* BOOKMARK LIST */}
+          <div className="space-y-3">
+            {filtered.map((b) => (
+              <div
+                key={b.id}
+                className="flex justify-between items-center px-4 py-3 rounded-xl border bg-white hover:shadow-md"
+              >
+                <a href={b.url} target="_blank" className="font-medium">
+                  {b.title}
+                </a>
+
+                <button
+                  onClick={() => deleteBookmark(b.id)}
+                  className="text-rose-500"
+                >
+                  Delete
+                </button>
+              </div>
+            ))}
+          </div>
+
         </div>
       </div>
-
-      {/* ✨ CSS ANIMATIONS */}
-      <style jsx>{`
-        .welcomeText {
-          font-size: 3.5rem;
-          font-weight: 800;
-          background: linear-gradient(90deg, #0a2540, #135e8a, #6b90a8);
-          -webkit-background-clip: text;
-          color: transparent;
-          animation: shimmer 4s linear infinite;
-        }
-
-        @keyframes shimmer {
-          0% { background-position: -300px; }
-          100% { background-position: 300px; }
-        }
-
-        .glow {
-          position: absolute;
-          width: 420px;
-          height: 420px;
-          border-radius: 50%;
-          filter: blur(140px);
-          opacity: 0.35;
-          animation: floatGlow 12s ease-in-out infinite alternate;
-        }
-
-        .glow1 {
-          background: #135e8a;
-          top: -120px;
-          left: -120px;
-        }
-
-        .glow2 {
-          background: #6b90a8;
-          bottom: -140px;
-          right: -120px;
-          animation-delay: 3s;
-        }
-
-        @keyframes floatGlow {
-          from { transform: translateY(0) translateX(0); }
-          to { transform: translateY(40px) translateX(30px); }
-        }
-      `}</style>
     </div>
   );
 }
+
 
 
 

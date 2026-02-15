@@ -61,26 +61,28 @@ export default function Home() {
       ? "bg-white/5 text-white border-white/10"
       : "bg-white/70 text-gray-900 border-gray-300");
 
+  /* ================= LOGIN PAGE ================= */
+
   if (!user) {
     return (
-      <div className="h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-[#083A66] via-[#0EA5C6] to-[#0B4F80]">
+      <div className="h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-[#E6F6FB] via-[#D6F0F7] to-[#CBEAF3]">
 
-        {/* aqua glow lights */}
+        {/* subtle glow */}
         <div className="glow glow1"></div>
         <div className="glow glow2"></div>
 
-        <div className="backdrop-blur-xl bg-white/15 border border-white/30 shadow-2xl rounded-3xl p-10 text-center space-y-6 text-white max-w-md animate-fadeIn">
+        <div className="backdrop-blur-xl bg-white/70 border border-white/60 shadow-2xl rounded-3xl p-10 text-center space-y-6 text-gray-800 max-w-md animate-fadeIn">
 
           <img
             src="https://cdn-icons-png.flaticon.com/512/5968/5968756.png"
-            className="w-16 mx-auto drop-shadow-lg"
+            className="w-16 mx-auto drop-shadow"
           />
 
           <h1 className="text-3xl font-bold tracking-wide">
             Smart Bookmark
           </h1>
 
-          <p className="text-sm opacity-90">
+          <p className="text-sm opacity-80">
             Capture ideas. Organize knowledge.
           </p>
 
@@ -101,30 +103,30 @@ export default function Home() {
     );
   }
 
+  /* ================= MAIN APP ================= */
+
   return (
     <div
       className={`min-h-screen flex items-center justify-center relative overflow-hidden ${
         dark
           ? "bg-gradient-to-br from-[#020617] via-[#083A66] to-[#031B2F]"
-          : "bg-gradient-to-br from-[#BFE9FF] via-[#E3F7FF] to-[#F7FDFF]"
+          : "bg-gradient-to-br from-[#0B5E73] via-[#083A66] to-[#031B2F]"
       }`}
     >
-      {/* aqua glow background */}
+      {/* glowing aqua lights */}
       <div className="glow glow1"></div>
       <div className="glow glow2"></div>
 
       <div className="w-full max-w-xl px-4">
 
-        {/* SKY BLUE GLASS CARD */}
         <div
           className={`rounded-3xl p-10 space-y-8 backdrop-blur-xl border shadow-xl ${
             dark
-              ? "bg-[#083A66]/60 border-white/10 text-white shadow-[0_0_40px_rgba(14,165,198,0.35)]"
-              : "bg-[#CFEFFF]/70 border-white/40 text-gray-900 shadow-[0_0_40px_rgba(14,165,198,0.25)]"
+              ? "bg-[#083A66]/60 border-white/10 text-white shadow-[0_0_60px_rgba(14,165,198,0.45)]"
+              : "bg-[#CFEFFF]/90 border-white/40 text-gray-900 shadow-[0_0_60px_rgba(14,165,198,0.35)]"
           }`}
         >
 
-          {/* Animated Welcome */}
           <div>
             <h1 className="welcomeText">Welcome</h1>
             <p className={dark ? "text-white/80" : "text-[#083A66]"}>
@@ -132,24 +134,22 @@ export default function Home() {
             </p>
           </div>
 
-          {/* Buttons */}
           <div className="flex gap-3">
             <button
               onClick={() => setDark(!dark)}
-              className="px-4 py-2 rounded-lg bg-[#0EA5C6] text-white hover:bg-[#083A66] shadow-md"
+              className="px-4 py-2 rounded-lg bg-[#0EA5C6] text-white hover:bg-[#083A66]"
             >
               {dark ? "Light" : "Dark"}
             </button>
 
             <button
               onClick={logout}
-              className="px-4 py-2 rounded-lg bg-rose-500 text-white hover:bg-rose-600 shadow-md"
+              className="px-4 py-2 rounded-lg bg-rose-500 text-white hover:bg-rose-600"
             >
               Logout
             </button>
           </div>
 
-          {/* Add bookmark */}
           <div className="flex flex-col sm:flex-row gap-4">
             <input
               placeholder="Title"
@@ -167,13 +167,12 @@ export default function Home() {
 
             <button
               onClick={addBookmark}
-              className="bg-[#0EA5C6] text-white px-6 py-3 rounded-lg hover:bg-[#083A66] shadow-lg"
+              className="bg-[#0EA5C6] text-white px-6 py-3 rounded-lg hover:bg-[#083A66]"
             >
               Add
             </button>
           </div>
 
-          {/* Search */}
           <div className="relative">
             <input
               placeholder="Search bookmarks..."
@@ -186,7 +185,6 @@ export default function Home() {
             </span>
           </div>
 
-          {/* Bookmarks */}
           <div className="space-y-3">
             {filtered.map((b) => (
               <div
@@ -222,17 +220,16 @@ export default function Home() {
         .welcomeText {
           font-size: 3rem;
           font-weight: 800;
-          background: linear-gradient(90deg, #083a66, #0ea5c6, #9feaff);
+          background: linear-gradient(90deg, #ffffff, #7dd3fc, #ffffff);
           background-size: 200% auto;
           -webkit-background-clip: text;
           color: transparent;
           animation: shine 4s linear infinite;
+          text-shadow: 0 0 20px rgba(125,211,252,0.5);
         }
 
         @keyframes shine {
-          to {
-            background-position: 200% center;
-          }
+          to { background-position: 200% center; }
         }
 
         .glow {
@@ -241,23 +238,24 @@ export default function Home() {
           height: 420px;
           border-radius: 50%;
           filter: blur(140px);
-          opacity: 0.4;
+          opacity: 0.45;
+          pointer-events: none;
         }
 
         .glow1 {
-          background: rgba(14,165,198,0.5);
+          background: rgba(14,165,198,0.55);
           top: -120px;
           left: -120px;
         }
 
         .glow2 {
-          background: rgba(159,234,255,0.5);
+          background: rgba(159,234,255,0.55);
           bottom: -140px;
           right: -120px;
         }
 
         .animate-fadeIn {
-          animation: fadeIn 1s ease;
+          animation: fadeIn 0.8s ease;
         }
 
         @keyframes fadeIn {
@@ -268,6 +266,7 @@ export default function Home() {
     </div>
   );
 }
+
 
 
 

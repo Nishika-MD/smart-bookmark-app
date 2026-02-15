@@ -18,18 +18,29 @@ export default function Home() {
   }, []);
 
   // FETCH BOOKMARKS
-  const fetchBookmarks = async () => {
-    const { data, error } = await supabase
-      .from("bookmarks")
-      .select("*")
-      .order("created_at", { ascending: false });
+const fetchBookmarks = async () => {
+  if (!user) return;
 
-    if (!error) setBookmarks(data || []);
-  };
+  const { data, error } = await supabase
+    .from("bookmarks")
+    .select("*")
+    .eq("user_id", user.id)
+    .order("created_at", { ascending: false });
 
-  useEffect(() => {
-    if (user) fetchBookmarks();
-  }, [user]);
+  if (error) {
+    console.log("Fetch error:", error);
+    return;
+  }
+
+  setBookmarks(data || []);
+};
+
+
+useEffect(() => {
+  if (user?.id) {
+    fetchBookmarks();
+  }
+}, [user]);
 
   // ADD BOOKMARK
   const addBookmark = async () => {

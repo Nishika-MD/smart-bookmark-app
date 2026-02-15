@@ -35,7 +35,11 @@ export default function Home() {
 
   const addBookmark = async () => {
     if (!title || !url) return;
-    await supabase.from("bookmarks").insert([{ title, url, user_id: user.id }]);
+
+    await supabase
+      .from("bookmarks")
+      .insert([{ title, url, user_id: user.id }]);
+
     setTitle("");
     setUrl("");
     fetchBookmarks();
@@ -56,10 +60,10 @@ export default function Home() {
   );
 
   const inputStyle =
-    "px-4 py-3 rounded-lg border w-full outline-none transition placeholder-gray-500 " +
+    "px-4 py-3 rounded-lg border w-full outline-none transition " +
     (dark
-      ? "bg-white/5 text-white border-white/10"
-      : "bg-white/70 text-gray-900 border-gray-300");
+      ? "bg-white/5 text-white border-white/10 placeholder-gray-400"
+      : "bg-white/80 text-gray-900 border-gray-300 placeholder-gray-500");
 
   /* ================= LOGIN PAGE ================= */
 
@@ -67,23 +71,20 @@ export default function Home() {
     return (
       <div className="h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-[#E6F6FB] via-[#D6F0F7] to-[#CBEAF3]">
 
-        {/* subtle glow */}
         <div className="glow glow1"></div>
         <div className="glow glow2"></div>
 
-        <div className="backdrop-blur-xl bg-white/70 border border-white/60 shadow-2xl rounded-3xl p-10 text-center space-y-6 text-gray-800 max-w-md animate-fadeIn">
+        <div className="backdrop-blur-xl bg-white/80 border border-white/60 shadow-2xl rounded-3xl p-10 text-center space-y-6 text-gray-800 max-w-md animate-fadeIn">
 
           <img
             src="https://cdn-icons-png.flaticon.com/512/5968/5968756.png"
             className="w-16 mx-auto drop-shadow"
           />
 
-          <h1 className="text-3xl font-bold tracking-wide">
-            Smart Bookmark
-          </h1>
+          <h1 className="text-3xl font-bold">Smart Bookmark</h1>
 
           <p className="text-sm opacity-80">
-            Capture ideas. Organize knowledge.
+            Capture ideas. Organ organize knowledge.
           </p>
 
           <button
@@ -103,17 +104,16 @@ export default function Home() {
     );
   }
 
-  /* ================= MAIN APP ================= */
+  /* ================= MAIN PAGE ================= */
 
   return (
     <div
       className={`min-h-screen flex items-center justify-center relative overflow-hidden ${
         dark
           ? "bg-gradient-to-br from-[#020617] via-[#083A66] to-[#031B2F]"
-          : "bg-gradient-to-br from-[#0B5E73] via-[#083A66] to-[#031B2F]"
+          : "bg-gradient-to-br from-[#062A3A] via-[#083A66] to-[#031B2F]"
       }`}
     >
-      {/* glowing aqua lights */}
       <div className="glow glow1"></div>
       <div className="glow glow2"></div>
 
@@ -123,7 +123,7 @@ export default function Home() {
           className={`rounded-3xl p-10 space-y-8 backdrop-blur-xl border shadow-xl ${
             dark
               ? "bg-[#083A66]/60 border-white/10 text-white shadow-[0_0_60px_rgba(14,165,198,0.45)]"
-              : "bg-[#CFEFFF]/90 border-white/40 text-gray-900 shadow-[0_0_60px_rgba(14,165,198,0.35)]"
+              : "bg-[#E6F6FB]/95 border-white/40 text-gray-900 shadow-[0_0_60px_rgba(14,165,198,0.25)]"
           }`}
         >
 
@@ -217,39 +217,27 @@ export default function Home() {
       </div>
 
       <style jsx>{`
-   .welcomeText {
-  font-size: 3rem;
-  font-weight: 900;
-  letter-spacing: 1px;
+        .welcomeText {
+          font-size: 3rem;
+          font-weight: 900;
+          letter-spacing: 1px;
+          background: linear-gradient(
+            90deg,
+            #38bdf8,
+            #0ea5c6,
+            #083a66
+          );
+          background-size: 200% auto;
+          -webkit-background-clip: text;
+          color: transparent;
+          animation: darkBlueShine 6s linear infinite;
+          text-shadow:
+            0 0 6px rgba(14,165,198,0.6),
+            0 0 12px rgba(14,165,198,0.4);
+        }
 
-  /* dark blue gradient shine */
-  background: linear-gradient(
-    90deg,
-    #0b3c5d,
-    #0ea5c6,
-    #083a66,
-    #0ea5c6,
-    #0b3c5d
-  );
-
-  background-size: 300% auto;
-  -webkit-background-clip: text;
-  color: transparent;
-
-  animation: darkBlueShine 5s linear infinite;
-
-  /* premium glow */
-  text-shadow:
-    0 0 10px rgba(14,165,198,0.7),
-    0 0 25px rgba(8,58,102,0.5);
-}
-@keyframes darkBlueShine {
-  0% { background-position: 0% center; }
-  100% { background-position: 300% center; }
-}
-
-
-        @keyframes shine {
+        @keyframes darkBlueShine {
+          from { background-position: 0% center; }
           to { background-position: 200% center; }
         }
 
@@ -258,8 +246,8 @@ export default function Home() {
           width: 420px;
           height: 420px;
           border-radius: 50%;
-          filter: blur(140px);
-          opacity: 0.45;
+          filter: blur(110px);
+          opacity: 0.35;
           pointer-events: none;
         }
 
@@ -287,6 +275,7 @@ export default function Home() {
     </div>
   );
 }
+
 
 
 

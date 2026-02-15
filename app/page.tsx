@@ -11,27 +11,22 @@ export default function Home() {
   const [search, setSearch] = useState("");
   const [dark, setDark] = useState(false);
 
-  // ✅ Get logged user
+  // Get logged in user
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
       setUser(data.session?.user);
     });
   }, []);
 
-  // ✅ Fetch only current user's bookmarks
+  // Fetch bookmarks for current user
   const fetchBookmarks = async () => {
     if (!user) return;
 
-    const { data, error } = await supabase
+    const { data } = await supabase
       .from("bookmarks")
       .select("*")
       .eq("user_id", user.id)
       .order("created_at", { ascending: false });
-
-    if (error) {
-      console.log("Fetch error:", error);
-      return;
-    }
 
     setBookmarks(data || []);
   };
@@ -40,32 +35,18 @@ export default function Home() {
     if (user?.id) fetchBookmarks();
   }, [user]);
 
-  // ✅ Add bookmark
   const addBookmark = async () => {
-    if (!title || !url) {
-      alert("Enter title and URL");
-      return;
-    }
+    if (!title || !url) return;
 
-    const { error } = await supabase.from("bookmarks").insert([
-      {
-        title,
-        url,
-        user_id: user.id,
-      },
+    await supabase.from("bookmarks").insert([
+      { title, url, user_id: user.id },
     ]);
-
-    if (error) {
-      alert(error.message);
-      return;
-    }
 
     setTitle("");
     setUrl("");
     fetchBookmarks();
   };
 
-  // ✅ Delete bookmark
   const deleteBookmark = async (id: string) => {
     await supabase.from("bookmarks").delete().eq("id", id);
     fetchBookmarks();
@@ -76,21 +57,21 @@ export default function Home() {
     location.reload();
   };
 
-  // ✅ Search filter
   const filtered = bookmarks.filter((b) =>
     b.title?.toLowerCase().includes(search.toLowerCase())
   );
 
   const inputStyle =
-    "px-4 py-3 rounded-lg border w-full outline-none placeholder-gray-500 " +
+    "px-4 py-3 rounded-lg border w-full outline-none transition placeholder-gray-500 " +
     (dark
       ? "bg-white/5 text-white border-white/10"
       : "bg-white text-gray-900 border-gray-300");
 
-  // 🌟 LOGIN PAGE
+  // 🌟 SIGN-IN PAGE
   if (!user) {
     return (
       <div className="h-screen flex items-center justify-center bg-gradient-to-br from-[#0A2540] via-[#135E8A] to-[#0E3A5D]">
+
         <div className="backdrop-blur-xl bg-white/10 border border-white/20 shadow-2xl rounded-3xl p-10 text-center space-y-6 text-white max-w-md">
 
           <h1 className="text-3xl font-bold">Smart Bookmark</h1>
@@ -128,11 +109,12 @@ export default function Home() {
     >
       <div className="w-full max-w-xl px-4">
 
-        <div className="rounded-3xl p-10 space-y-8 backdrop-blur-xl border bg-white/80 shadow-xl">
+        {/* GLASS CARD */}
+        <div className="rounded-3xl p-10 space-y-8 backdrop-blur-xl border bg-white/80 shadow-[0_30px_80px_rgba(19,94,138,0.18)]">
 
-          {/* Welcome */}
+          {/* Animated Welcome */}
           <div>
-            <h1 className="text-5xl font-extrabold text-[#0A2540]">
+            <h1 className="welcomeText">
               Welcome
             </h1>
             <p className="text-lg text-[#135E8A]">{user.email}</p>
@@ -192,20 +174,24 @@ export default function Home() {
             </span>
           </div>
 
-          {/* Bookmark list */}
+          {/* Bookmark List */}
           <div className="space-y-3">
             {filtered.map((b) => (
               <div
                 key={b.id}
                 className="flex justify-between items-center px-4 py-3 rounded-xl border bg-white hover:shadow-md"
               >
-                <a href={b.url} target="_blank" className="font-medium">
+                <a
+                  href={b.url}
+                  target="_blank"
+                  className="font-semibold text-[#0A2540]"
+                >
                   {b.title}
                 </a>
 
                 <button
                   onClick={() => deleteBookmark(b.id)}
-                  className="text-rose-500"
+                  className="text-rose-500 font-medium"
                 >
                   Delete
                 </button>
@@ -215,9 +201,29 @@ export default function Home() {
 
         </div>
       </div>
+
+      {/* ✨ Welcome animation */}
+      <style jsx>{`
+        .welcomeText {
+          font-size: 3.2rem;
+          font-weight: 800;
+          background: linear-gradient(90deg, #0a2540, #135e8a, #6b90a8);
+          background-size: 200% auto;
+          -webkit-background-clip: text;
+          color: transparent;
+          animation: shine 4s linear infinite;
+        }
+
+        @keyframes shine {
+          to {
+            background-position: 200% center;
+          }
+        }
+      `}</style>
     </div>
   );
 }
+
 
 
 

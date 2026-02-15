@@ -217,16 +217,19 @@ export default function Home() {
       </div>
 
       <style jsx>{`
-        .welcomeText {
-          font-size: 3rem;
-          font-weight: 800;
-          background: linear-gradient(90deg, #ffffff, #7dd3fc, #ffffff);
-          background-size: 200% auto;
-          -webkit-background-clip: text;
-          color: transparent;
-          animation: shine 4s linear infinite;
-          text-shadow: 0 0 20px rgba(125,211,252,0.5);
-        }
+       .welcomeText {
+  font-size: 3rem;
+  font-weight: 900;
+  background: linear-gradient(90deg, #e0f2fe, #0ea5c6, #e0f2fe);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  color: transparent;
+  animation: shine 4s linear infinite;
+  text-shadow:
+    0 0 10px rgba(14,165,198,0.8),
+    0 0 25px rgba(14,165,198,0.4);
+}
+
 
         @keyframes shine {
           to { background-position: 200% center; }

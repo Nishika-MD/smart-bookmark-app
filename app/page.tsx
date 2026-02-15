@@ -9,13 +9,16 @@ export default function Home() {
   const [title, setTitle] = useState("");
   const [url, setUrl] = useState("");
   const [search, setSearch] = useState("");
+  const [dark, setDark] = useState(false);
 
+  // get user
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
       setUser(data.user);
     });
   }, []);
 
+  // fetch bookmarks
   const fetchBookmarks = async () => {
     const { data } = await supabase
       .from("bookmarks")
@@ -57,33 +60,44 @@ export default function Home() {
     b.title.toLowerCase().includes(search.toLowerCase())
   );
 
+  const name =
+    user?.user_metadata?.full_name ||
+    user?.user_metadata?.name ||
+    user?.email?.split("@")[0];
+
   /* ================= LOGIN SCREEN ================= */
 
   if (!user) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#C7D7E2]">
-        <div className="bg-white rounded-3xl shadow-2xl p-10 w-[380px] text-center border border-gray-200">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-200 to-slate-300">
 
-          <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-[#2F6F91] flex items-center justify-center shadow-lg">
-            <span className="text-white text-3xl">📚</span>
+        <div className="bg-white rounded-3xl shadow-2xl px-10 py-12 text-center w-[360px]">
+
+          <div className="w-20 h-20 mx-auto rounded-full bg-gradient-to-br from-slate-700 to-slate-900 flex items-center justify-center text-white text-3xl shadow-lg">
+            📚
           </div>
 
-          <h2 className="text-2xl font-bold text-[#0B2E4F]">
-            Smart Bookmark
+          <h2 className="mt-6 text-2xl font-bold text-slate-800">
+            Welcome Back
           </h2>
 
-          <p className="text-[#6F97B3] text-sm mt-2 mb-6">
-            Save links. Stay organized.
+          <p className="text-slate-500 mb-8 text-sm">
+            Sign in to manage your bookmarks
           </p>
 
           <button
             onClick={() =>
               supabase.auth.signInWithOAuth({ provider: "google" })
             }
-            className="w-full py-3 rounded-lg text-white font-semibold
-            bg-[#2F6F91] hover:bg-[#0E4A6B] transition shadow-md"
+            className="w-full flex items-center justify-center gap-3 border border-slate-300 py-3 rounded-lg shadow-sm hover:shadow-md hover:bg-slate-50 transition"
           >
-            Login with Google
+            <img
+              src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+              className="w-5"
+            />
+            <span className="font-semibold text-slate-700">
+              Continue with Google
+            </span>
           </button>
         </div>
       </div>
@@ -93,87 +107,116 @@ export default function Home() {
   /* ================= MAIN APP ================= */
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#C7D7E2]">
+    <div
+      className={`min-h-screen flex items-center justify-center transition ${
+        dark
+          ? "bg-slate-900"
+          : "bg-gradient-to-br from-slate-200 to-slate-300"
+      }`}
+    >
+      <div className="w-full max-w-xl px-4">
 
-      <div className="w-full max-w-2xl">
-
-        <h1 className="text-4xl font-bold text-center text-[#0B2E4F] mb-2">
+        <h1 className="text-4xl font-extrabold text-center text-slate-800 mb-2">
           Smart Bookmark
         </h1>
-        <p className="text-center text-[#2F6F91] mb-6">
+
+        <p className="text-center text-slate-500 mb-8">
           Organize your web smarter
         </p>
 
-        <div className="bg-white rounded-3xl shadow-xl p-8 border border-gray-200">
+        <div className="bg-white rounded-3xl shadow-xl p-8">
 
-          {/* HEADER */}
-          <div className="flex justify-between items-center bg-[#F1F5F9] rounded-xl px-4 py-3 mb-6">
-            <span className="font-semibold text-[#0B2E4F]">
-              Welcome {user.user_metadata?.full_name || user.email}
-            </span>
+          {/* header */}
+          <div className="flex justify-between items-center bg-slate-100 px-5 py-4 rounded-xl mb-6">
+            <h2 className="font-semibold text-slate-700">
+              Welcome <span className="text-slate-900">{name}</span>
+            </h2>
 
-            <button
-              onClick={logout}
-              className="bg-[#0B2E4F] text-white px-4 py-1 rounded-md hover:bg-[#0E4A6B]"
-            >
-              Logout
-            </button>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setDark(!dark)}
+                className="px-3 py-1 rounded-md bg-slate-400 text-white text-sm"
+              >
+                {dark ? "Light" : "Dark"}
+              </button>
+
+              <button
+                onClick={logout}
+                className="px-3 py-1 rounded-md bg-slate-800 text-white text-sm"
+              >
+                Logout
+              </button>
+            </div>
           </div>
 
-          {/* INPUT */}
+          {/* inputs */}
           <div className="flex gap-3 mb-4">
             <input
-              placeholder="Title"
+              placeholder="Bookmark title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="flex-1 px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#2F6F91]"
+              className="flex-1 px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-slate-500 outline-none"
             />
 
             <input
-              placeholder="URL"
+              placeholder="https://example.com"
               value={url}
               onChange={(e) => setUrl(e.target.value)}
-              className="flex-1 px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#2F6F91]"
+              className="flex-1 px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-slate-500 outline-none"
             />
 
             <button
               onClick={addBookmark}
-              className="px-6 rounded-lg text-white font-semibold
-              bg-[#2F6F91] hover:bg-[#0E4A6B] transition"
+              className="bg-slate-800 text-white px-6 rounded-lg hover:bg-slate-700 transition"
             >
               Add
             </button>
           </div>
 
-          {/* SEARCH */}
+          {/* search */}
           <input
             placeholder="Search bookmarks..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full px-4 py-3 rounded-lg border border-gray-300 mb-5 focus:ring-2 focus:ring-[#2F6F91]"
+            className="w-full px-4 py-3 mb-6 rounded-lg border border-slate-300 focus:ring-2 focus:ring-slate-500 outline-none"
           />
 
-          {/* LIST */}
+          {/* bookmarks */}
           <div className="space-y-3">
             {filtered.map((b) => (
               <div
                 key={b.id}
-                className="flex justify-between items-center px-4 py-3 rounded-lg bg-[#F8FAFC] border"
+                className="flex justify-between items-center bg-slate-50 px-4 py-3 rounded-lg hover:shadow transition"
               >
-                <a
-                  href={b.url}
-                  target="_blank"
-                  className="font-medium text-[#0E4A6B] hover:underline"
-                >
-                  {b.title}
-                </a>
+                <div className="flex items-center gap-3">
+                  <img
+                    src={`https://www.google.com/s2/favicons?domain=${b.url}`}
+                    className="w-5 h-5"
+                  />
+                  <a
+                    href={b.url}
+                    target="_blank"
+                    className="font-medium text-slate-700 hover:underline"
+                  >
+                    {b.title}
+                  </a>
+                </div>
 
-                <button
-                  onClick={() => deleteBookmark(b.id)}
-                  className="text-red-500 font-medium"
-                >
-                  Delete
-                </button>
+                <div className="flex gap-4 text-sm">
+                  <button
+                    onClick={() => navigator.clipboard.writeText(b.url)}
+                    className="text-slate-500 hover:text-slate-800"
+                  >
+                    Copy
+                  </button>
+
+                  <button
+                    onClick={() => deleteBookmark(b.id)}
+                    className="text-red-500"
+                  >
+                    Delete
+                  </button>
+                </div>
               </div>
             ))}
           </div>
@@ -183,6 +226,7 @@ export default function Home() {
     </div>
   );
 }
+
 
 
 

@@ -10,16 +10,10 @@ export default function Home() {
   const [url, setUrl] = useState("");
   const [search, setSearch] = useState("");
   const [dark, setDark] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [loginSuccess, setLoginSuccess] = useState(false);
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
-      if (data.user) {
-        setUser(data.user);
-        setLoginSuccess(true);
-        setTimeout(() => setLoginSuccess(false), 2000);
-      }
+      setUser(data.user);
     });
   }, []);
 
@@ -64,165 +58,155 @@ export default function Home() {
     b.title.toLowerCase().includes(search.toLowerCase())
   );
 
+  const name =
+    user?.user_metadata?.full_name ||
+    user?.user_metadata?.name ||
+    user?.email?.split("@")[0];
+
   /* ================= LOGIN SCREEN ================= */
 
   if (!user) {
     return (
-      <div className="relative min-h-screen flex items-center justify-center bg-sky-200">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#EEF4F7] to-[#DDE7ED] relative overflow-hidden">
 
-        {/* floating particles */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          {[...Array(20)].map((_, i) => (
-            <span
-              key={i}
-              className="absolute bg-white/50 rounded-full animate-ping"
-              style={{
-                width: Math.random() * 6 + 4,
-                height: Math.random() * 6 + 4,
-                top: Math.random() * 100 + "%",
-                left: Math.random() * 100 + "%",
-                animationDuration: Math.random() * 4 + 3 + "s",
-              }}
-            />
-          ))}
-        </div>
+        {/* subtle glow */}
+        <div className="absolute w-72 h-72 bg-blue-200 rounded-full blur-3xl opacity-40 -top-10 -left-10"></div>
+        <div className="absolute w-72 h-72 bg-indigo-200 rounded-full blur-3xl opacity-40 bottom-0 right-0"></div>
 
-        <div className="relative bg-white/60 backdrop-blur-xl rounded-3xl shadow-2xl p-10 text-center w-[360px] border border-white/40">
+        <div className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl px-10 py-12 text-center w-[360px] animate-fadeIn">
 
-          <div className="w-20 h-20 mx-auto rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-xl">
-            <span className="text-white text-3xl">📚</span>
+          <div className="w-20 h-20 mx-auto rounded-full bg-gradient-to-br from-slate-700 to-slate-900 flex items-center justify-center text-white text-3xl shadow-lg">
+            📚
           </div>
 
-          <h1 className="text-3xl font-extrabold mt-4 text-slate-700">
-            Smart Bookmark
-          </h1>
+          <h2 className="mt-6 text-2xl font-bold text-slate-800">
+            Welcome Back
+          </h2>
 
-          <p className="text-gray-500 mb-6">
-            Capture ideas. Organize knowledge.
+          <p className="text-slate-500 mb-8 text-sm">
+            Sign in to manage your bookmarks
           </p>
 
           <button
-            onClick={async () => {
-              setLoading(true);
-              await supabase.auth.signInWithOAuth({ provider: "google" });
-            }}
-            className="w-full bg-white py-3 rounded-xl
-            flex items-center justify-center gap-3
-            font-semibold text-gray-700
-            shadow-lg hover:shadow-2xl
-            hover:scale-105 active:scale-95
-            transition duration-300"
+            onClick={() =>
+              supabase.auth.signInWithOAuth({ provider: "google" })
+            }
+            className="w-full flex items-center justify-center gap-3 border border-slate-300 py-3 rounded-lg shadow-sm hover:shadow-md hover:bg-slate-50 transition"
           >
-            {loading ? (
-              <div className="w-5 h-5 border-2 border-gray-400 border-t-transparent rounded-full animate-spin"></div>
-            ) : (
-              <>
-                <img
-                  src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
-                  className="w-5 h-5"
-                />
-                Continue with Google
-              </>
-            )}
+            <img
+              src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+              className="w-5"
+            />
+            <span className="font-semibold text-slate-700">
+              Continue with Google
+            </span>
           </button>
         </div>
       </div>
     );
   }
 
-  /* ================= DASHBOARD ================= */
+  /* ================= MAIN APP ================= */
 
   return (
     <div
-      className="min-h-screen flex items-center justify-center transition"
-      style={{
-        background: dark
-          ? "linear-gradient(135deg,#020617,#1e1b4b,#020617)"
-          : "linear-gradient(135deg,#dbeafe,#bfdbfe,#93c5fd)",
-      }}
+      className={`min-h-screen flex items-center justify-center transition relative overflow-hidden ${
+        dark
+          ? "bg-slate-900"
+          : "bg-gradient-to-br from-[#CBD5E1] to-[#94A3B8]"
+      }`}
     >
-      <div className="w-full max-w-xl px-4 text-center animate-fadeUp">
+      {/* glow background */}
+      <div className="absolute w-80 h-80 bg-indigo-300 rounded-full blur-3xl opacity-20 -top-20 -left-20"></div>
+      <div className="absolute w-80 h-80 bg-sky-300 rounded-full blur-3xl opacity-20 bottom-0 right-0"></div>
 
-        <h1 className="text-4xl font-extrabold text-slate-800 drop-shadow">
+      <div className="w-full max-w-xl px-4">
+
+        <h1 className="text-4xl font-extrabold text-center text-slate-800 mb-2 shineText">
           Smart Bookmark
         </h1>
-        <p className="text-slate-600 italic mt-2 mb-4">
-          Save links. Stay organized. Browse smarter.
+
+        <p className="text-center text-slate-600 mb-8">
+          Organize your web smarter
         </p>
 
-        {loginSuccess && (
-          <div className="mb-4">
-            <span className="px-4 py-2 bg-green-500 text-white rounded-full shadow animate-bounce">
-              Login Successful
-            </span>
-          </div>
-        )}
+        <div className="bg-white/85 backdrop-blur-xl rounded-3xl shadow-xl p-8 animate-fadeIn">
 
-        <div className={`rounded-2xl p-6 shadow-xl ${dark ? "bg-slate-900 text-white" : "bg-white"}`}>
-
-          {/* HEADER */}
-          <div className="flex justify-between items-center px-4 py-3 rounded-xl mb-6 bg-gray-100">
-            <h2 className="font-semibold">
-              Welcome {user.user_metadata?.full_name || "User"}
+          {/* header */}
+          <div className="flex justify-between items-center bg-slate-100 px-5 py-4 rounded-xl mb-6">
+            <h2 className="font-semibold text-slate-700">
+              Welcome <span className="text-slate-900">{name}</span>
             </h2>
 
             <div className="flex gap-2">
               <button
                 onClick={() => setDark(!dark)}
-                className="px-3 py-1 rounded-md bg-gray-400 text-white"
+                className="px-3 py-1 rounded-md bg-slate-400 text-white text-sm hover:brightness-110"
               >
                 {dark ? "Light" : "Dark"}
               </button>
 
               <button
                 onClick={logout}
-                className="bg-red-500 text-white px-3 py-1 rounded-md"
+                className="px-3 py-1 rounded-md bg-slate-800 text-white text-sm hover:bg-slate-700"
               >
                 Logout
               </button>
             </div>
           </div>
 
-          {/* INPUTS */}
+          {/* inputs */}
           <div className="flex gap-3 mb-4">
             <input
-              placeholder="Title"
+              placeholder="Bookmark title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="px-4 py-3 rounded-lg border w-full"
+              className="flex-1 px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-slate-500 outline-none"
             />
+
             <input
-              placeholder="URL"
+              placeholder="https://example.com"
               value={url}
               onChange={(e) => setUrl(e.target.value)}
-              className="px-4 py-3 rounded-lg border w-full"
+              className="flex-1 px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-slate-500 outline-none"
             />
+
             <button
               onClick={addBookmark}
-              className="bg-indigo-600 text-white px-5 rounded-lg hover:scale-105 hover:shadow-lg transition"
+              className="bg-slate-800 text-white px-6 rounded-lg hover:bg-slate-700 transition"
             >
               Add
             </button>
           </div>
 
-          {/* SEARCH */}
+          {/* search */}
           <input
             placeholder="Search bookmarks..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="px-4 py-3 rounded-lg border w-full mb-4"
+            className="w-full px-4 py-3 mb-6 rounded-lg border border-slate-300 focus:ring-2 focus:ring-slate-500 outline-none"
           />
 
-          {/* LIST */}
+          {/* bookmarks */}
           <div className="space-y-3">
             {filtered.map((b) => (
               <div
                 key={b.id}
-                className="flex justify-between items-center px-4 py-3 rounded-lg bg-gray-50 hover:-translate-y-1 hover:shadow-lg transition"
+                className="flex justify-between items-center bg-slate-50 px-4 py-3 rounded-lg hover:shadow transition"
               >
-                <a href={b.url} target="_blank" className="font-medium hover:underline">
-                  {b.title}
-                </a>
+                <div className="flex items-center gap-3">
+                  <img
+                    src={`https://www.google.com/s2/favicons?domain=${b.url}`}
+                    className="w-5 h-5"
+                  />
+                  <a
+                    href={b.url}
+                    target="_blank"
+                    className="font-medium text-slate-700 hover:underline"
+                  >
+                    {b.title}
+                  </a>
+                </div>
 
                 <button
                   onClick={() => deleteBookmark(b.id)}
@@ -236,9 +220,36 @@ export default function Home() {
 
         </div>
       </div>
+
+      {/* animations */}
+      <style jsx>{`
+        .shineText {
+          background: linear-gradient(90deg, #1e293b, #64748b, #1e293b);
+          background-size: 200% auto;
+          -webkit-background-clip: text;
+          color: transparent;
+          animation: shine 4s linear infinite;
+        }
+
+        @keyframes shine {
+          to {
+            background-position: 200% center;
+          }
+        }
+
+        .animate-fadeIn {
+          animation: fadeIn 0.8s ease;
+        }
+
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(15px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
     </div>
   );
 }
+
 
 
 

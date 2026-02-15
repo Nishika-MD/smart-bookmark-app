@@ -59,16 +59,18 @@ export default function Home() {
     "px-4 py-3 rounded-lg border w-full outline-none transition placeholder-gray-500 " +
     (dark
       ? "bg-white/5 text-white border-white/10"
-      : "bg-white/70 text-gray-900 border-gray-300");
+      : "bg-white/80 text-gray-900 border-gray-300");
 
+  // ⭐ LOGIN PAGE
   if (!user) {
     return (
-      <div className="h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-[#083A66] via-[#0EA5C6] to-[#0B4F80]">
+      <div className="h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-[#083A66] via-[#0B5E73] to-[#062A3A]">
 
-        {/* aqua glow lights */}
+        {/* glow */}
         <div className="glow glow1"></div>
         <div className="glow glow2"></div>
 
+        {/* lighter card for contrast */}
         <div className="backdrop-blur-xl bg-white/15 border border-white/30 shadow-2xl rounded-3xl p-10 text-center space-y-6 text-white max-w-md animate-fadeIn">
 
           <img
@@ -106,25 +108,24 @@ export default function Home() {
       className={`min-h-screen flex items-center justify-center relative overflow-hidden ${
         dark
           ? "bg-gradient-to-br from-[#020617] via-[#083A66] to-[#031B2F]"
-          : "bg-gradient-to-br from-[#BFE9FF] via-[#E3F7FF] to-[#F7FDFF]"
+          : "bg-gradient-to-br from-[#0B5E73] via-[#0E7C91] to-[#083A66]"
       }`}
     >
-      {/* aqua glow background */}
+      {/* glow */}
       <div className="glow glow1"></div>
       <div className="glow glow2"></div>
 
       <div className="w-full max-w-xl px-4">
 
-        {/* SKY BLUE GLASS CARD */}
+        {/* CARD (lighter for contrast) */}
         <div
           className={`rounded-3xl p-10 space-y-8 backdrop-blur-xl border shadow-xl ${
             dark
               ? "bg-[#083A66]/60 border-white/10 text-white shadow-[0_0_40px_rgba(14,165,198,0.35)]"
-              : "bg-[#CFEFFF]/70 border-white/40 text-gray-900 shadow-[0_0_40px_rgba(14,165,198,0.25)]"
+              : "bg-[#CFEFFF]/85 border-white/40 text-gray-900 shadow-[0_0_40px_rgba(14,165,198,0.25)]"
           }`}
         >
 
-          {/* Animated Welcome */}
           <div>
             <h1 className="welcomeText">Welcome</h1>
             <p className={dark ? "text-white/80" : "text-[#083A66]"}>
@@ -132,24 +133,22 @@ export default function Home() {
             </p>
           </div>
 
-          {/* Buttons */}
           <div className="flex gap-3">
             <button
               onClick={() => setDark(!dark)}
-              className="px-4 py-2 rounded-lg bg-[#0EA5C6] text-white hover:bg-[#083A66] shadow-md"
+              className="px-4 py-2 rounded-lg bg-[#0EA5C6] text-white hover:bg-[#083A66]"
             >
               {dark ? "Light" : "Dark"}
             </button>
 
             <button
               onClick={logout}
-              className="px-4 py-2 rounded-lg bg-rose-500 text-white hover:bg-rose-600 shadow-md"
+              className="px-4 py-2 rounded-lg bg-rose-500 text-white hover:bg-rose-600"
             >
               Logout
             </button>
           </div>
 
-          {/* Add bookmark */}
           <div className="flex flex-col sm:flex-row gap-4">
             <input
               placeholder="Title"
@@ -167,13 +166,12 @@ export default function Home() {
 
             <button
               onClick={addBookmark}
-              className="bg-[#0EA5C6] text-white px-6 py-3 rounded-lg hover:bg-[#083A66] shadow-lg"
+              className="bg-[#0EA5C6] text-white px-6 py-3 rounded-lg hover:bg-[#083A66]"
             >
               Add
             </button>
           </div>
 
-          {/* Search */}
           <div className="relative">
             <input
               placeholder="Search bookmarks..."
@@ -186,13 +184,12 @@ export default function Home() {
             </span>
           </div>
 
-          {/* Bookmarks */}
           <div className="space-y-3">
             {filtered.map((b) => (
               <div
                 key={b.id}
                 className={`flex justify-between items-center px-4 py-3 rounded-xl ${
-                  dark ? "bg-white/10" : "bg-white/80"
+                  dark ? "bg-white/10" : "bg-white/90"
                 }`}
               >
                 <a
@@ -222,17 +219,9 @@ export default function Home() {
         .welcomeText {
           font-size: 3rem;
           font-weight: 800;
-          background: linear-gradient(90deg, #083a66, #0ea5c6, #9feaff);
-          background-size: 200% auto;
+          background: linear-gradient(90deg, #ffffff, #9feaff);
           -webkit-background-clip: text;
           color: transparent;
-          animation: shine 4s linear infinite;
-        }
-
-        @keyframes shine {
-          to {
-            background-position: 200% center;
-          }
         }
 
         .glow {
@@ -268,6 +257,7 @@ export default function Home() {
     </div>
   );
 }
+
 
 
 

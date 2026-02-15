@@ -11,46 +11,49 @@ export default function Home() {
   const [search, setSearch] = useState("");
   const [dark, setDark] = useState(false);
 
+  // ✅ Get logged user
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => {
-      setUser(data.user);
+    supabase.auth.getSession().then(({ data }) => {
+      setUser(data.session?.user);
     });
   }, []);
 
-  // FETCH BOOKMARKS
-const fetchBookmarks = async () => {
-  if (!user) return;
+  // ✅ Fetch only current user's bookmarks
+  const fetchBookmarks = async () => {
+    if (!user) return;
 
-  const { data, error } = await supabase
-    .from("bookmarks")
-    .select("*")
-    .eq("user_id", user.id)
-    .order("created_at", { ascending: false });
+    const { data, error } = await supabase
+      .from("bookmarks")
+      .select("*")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false });
 
-  if (error) {
-    console.log("Fetch error:", error);
-    return;
-  }
+    if (error) {
+      console.log("Fetch error:", error);
+      return;
+    }
 
-  setBookmarks(data || []);
-};
+    setBookmarks(data || []);
+  };
 
+  useEffect(() => {
+    if (user?.id) fetchBookmarks();
+  }, [user]);
 
-useEffect(() => {
-  if (user?.id) {
-    fetchBookmarks();
-  }
-}, [user]);
-
-  // ADD BOOKMARK
+  // ✅ Add bookmark
   const addBookmark = async () => {
-    if (!title || !url) return alert("Enter title & URL");
+    if (!title || !url) {
+      alert("Enter title and URL");
+      return;
+    }
 
-    const { error } = await supabase.from("bookmarks").insert({
-      title,
-      url,
-      user_id: user.id,
-    });
+    const { error } = await supabase.from("bookmarks").insert([
+      {
+        title,
+        url,
+        user_id: user.id,
+      },
+    ]);
 
     if (error) {
       alert(error.message);
@@ -62,7 +65,7 @@ useEffect(() => {
     fetchBookmarks();
   };
 
-  // DELETE BOOKMARK
+  // ✅ Delete bookmark
   const deleteBookmark = async (id: string) => {
     await supabase.from("bookmarks").delete().eq("id", id);
     fetchBookmarks();
@@ -73,22 +76,21 @@ useEffect(() => {
     location.reload();
   };
 
-  // SEARCH
+  // ✅ Search filter
   const filtered = bookmarks.filter((b) =>
     b.title?.toLowerCase().includes(search.toLowerCase())
   );
 
   const inputStyle =
-    "px-4 py-3 rounded-lg border w-full outline-none transition placeholder-opacity-100 " +
+    "px-4 py-3 rounded-lg border w-full outline-none placeholder-gray-500 " +
     (dark
-      ? "bg-white/5 text-white border-white/10 placeholder-gray-400"
-      : "bg-white text-gray-900 border-gray-300 placeholder-gray-500");
+      ? "bg-white/5 text-white border-white/10"
+      : "bg-white text-gray-900 border-gray-300");
 
-  // ⭐ CREATIVE SIGN-IN PAGE
+  // 🌟 LOGIN PAGE
   if (!user) {
     return (
       <div className="h-screen flex items-center justify-center bg-gradient-to-br from-[#0A2540] via-[#135E8A] to-[#0E3A5D]">
-
         <div className="backdrop-blur-xl bg-white/10 border border-white/20 shadow-2xl rounded-3xl p-10 text-center space-y-6 text-white max-w-md">
 
           <h1 className="text-3xl font-bold">Smart Bookmark</h1>
@@ -128,7 +130,7 @@ useEffect(() => {
 
         <div className="rounded-3xl p-10 space-y-8 backdrop-blur-xl border bg-white/80 shadow-xl">
 
-          {/* WELCOME */}
+          {/* Welcome */}
           <div>
             <h1 className="text-5xl font-extrabold text-[#0A2540]">
               Welcome
@@ -136,7 +138,7 @@ useEffect(() => {
             <p className="text-lg text-[#135E8A]">{user.email}</p>
           </div>
 
-          {/* BUTTONS */}
+          {/* Buttons */}
           <div className="flex gap-3">
             <button
               onClick={() => setDark(!dark)}
@@ -153,7 +155,7 @@ useEffect(() => {
             </button>
           </div>
 
-          {/* INPUTS */}
+          {/* Add bookmark */}
           <div className="flex flex-col sm:flex-row gap-4">
             <input
               placeholder="Title"
@@ -177,7 +179,7 @@ useEffect(() => {
             </button>
           </div>
 
-          {/* SEARCH */}
+          {/* Search */}
           <div className="relative">
             <input
               placeholder="Search bookmarks..."
@@ -190,7 +192,7 @@ useEffect(() => {
             </span>
           </div>
 
-          {/* BOOKMARK LIST */}
+          {/* Bookmark list */}
           <div className="space-y-3">
             {filtered.map((b) => (
               <div
@@ -216,6 +218,7 @@ useEffect(() => {
     </div>
   );
 }
+
 
 
 

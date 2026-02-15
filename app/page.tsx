@@ -32,20 +32,13 @@ export default function Home() {
 
   const addBookmark = async () => {
     if (!title || !url) return;
-
     await supabase.from("bookmarks").insert({
       title,
       url,
       user_id: user.id,
     });
-
     setTitle("");
     setUrl("");
-    fetchBookmarks();
-  };
-
-  const deleteBookmark = async (id: string) => {
-    await supabase.from("bookmarks").delete().eq("id", id);
     fetchBookmarks();
   };
 
@@ -54,86 +47,77 @@ export default function Home() {
     location.reload();
   };
 
-  const filtered = bookmarks.filter((b) =>
-    b.title.toLowerCase().includes(search.toLowerCase())
-  );
-
   const inputStyle =
     "px-4 py-3 rounded-lg border w-full outline-none transition placeholder-opacity-100 " +
     (dark
       ? "bg-white/5 text-white border-white/10 placeholder-gray-400 focus:ring-2 focus:ring-[#6B90A8]"
-      : "bg-white/80 text-gray-900 border-gray-300 placeholder-gray-500 focus:ring-2 focus:ring-[#135E8A]");
+      : "bg-white/85 text-gray-900 border-gray-300 placeholder-gray-500 focus:ring-2 focus:ring-[#135E8A]");
 
+  // 🌟 SIGN-IN PAGE (CREATIVE)
   if (!user) {
     return (
-      <div className="h-screen flex items-center justify-center bg-[#0A2540]">
-        <button
-          onClick={() =>
-            supabase.auth.signInWithOAuth({ provider: "google" })
-          }
-          className="bg-white text-[#0A2540] px-6 py-3 rounded-lg text-lg hover:scale-105 transition"
-        >
-          Sign in with Google
-        </button>
+      <div className="h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-[#0A2540] via-[#135E8A] to-[#0E3A5D]">
+
+        {/* glowing lights */}
+        <div className="absolute glow glow1"></div>
+        <div className="absolute glow glow2"></div>
+
+        <div className="backdrop-blur-xl bg-white/10 border border-white/20 shadow-2xl rounded-3xl p-10 text-center space-y-6 text-white max-w-md">
+
+          <h1 className="text-3xl font-bold">Smart Bookmark</h1>
+
+          <p className="text-sm opacity-90">
+            “Organize your knowledge.  
+            Save what matters.  
+            Build your digital memory.”
+          </p>
+
+          <button
+            onClick={() =>
+              supabase.auth.signInWithOAuth({ provider: "google" })
+            }
+            className="bg-white text-[#0A2540] px-6 py-3 rounded-xl font-semibold hover:scale-105 transition shadow-lg"
+          >
+            Sign in with Google
+          </button>
+        </div>
       </div>
     );
   }
 
   return (
     <div
-      className={`min-h-screen flex items-center justify-center transition duration-500 relative overflow-hidden ${
+      className={`min-h-screen flex items-center justify-center relative overflow-hidden ${
         dark
           ? "bg-gradient-to-br from-[#0A2540] via-[#0E3A5D] to-[#020617]"
           : "bg-gradient-to-br from-[#E6F2F7] via-[#DCEFF6] to-[#F8FDFF]"
       }`}
     >
-      {/* 🌊 Animated aqua glow */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="glow glow1"></div>
-        <div className="glow glow2"></div>
-      </div>
+      {/* aqua glow */}
+      <div className="absolute glow glow1"></div>
+      <div className="absolute glow glow2"></div>
 
-      <div className="w-full max-w-xl px-4 animate-fadeIn relative">
+      <div className="w-full max-w-xl px-4 relative">
 
-        {/* GLASS CARD */}
         <div
-          className={`relative rounded-3xl p-10 space-y-8 backdrop-blur-xl border transition transform hover:-translate-y-2 hover:scale-[1.01] ${
+          className={`relative rounded-3xl p-10 space-y-8 backdrop-blur-xl border transition ${
             dark
               ? "bg-white/5 border-white/10 shadow-[0_30px_80px_rgba(19,94,138,0.35)] text-white"
               : "bg-white/80 border-white/60 shadow-[0_30px_80px_rgba(19,94,138,0.18)] text-gray-900"
           }`}
         >
-          {/* ✨ Glass shine reflection */}
-          <div className="shine"></div>
 
-          {/* 🏆 HERO HEADER */}
+          {/* 🌟 Animated Welcome */}
           <div className="space-y-3 pb-3 border-b border-white/20">
-
-            {/* 🔷 Logo Branding */}
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#135E8A] to-[#0E3A5D] flex items-center justify-center text-white font-bold text-lg shadow-md">
-                SB
-              </div>
-              <span className="font-semibold tracking-wide text-sm opacity-80">
-                Smart Bookmark
-              </span>
-            </div>
-
-            <h1
-              className={`text-5xl sm:text-6xl font-extrabold tracking-tight leading-tight bg-gradient-to-r from-[#0A2540] to-[#135E8A] bg-clip-text text-transparent ${
-                dark && "drop-shadow-[0_0_12px_rgba(19,94,138,0.6)]"
-              }`}
-            >
+            <h1 className="welcomeText">
               Welcome
             </h1>
 
             <p className={`${dark ? "text-[#B8CAD6]" : "text-[#0E3A5D]"} text-lg`}>
               {user.email}
             </p>
-
           </div>
 
-          {/* BUTTONS */}
           <div className="flex gap-3">
             <button
               onClick={() => setDark(!dark)}
@@ -150,7 +134,7 @@ export default function Home() {
             </button>
           </div>
 
-          {/* INPUTS */}
+          {/* inputs */}
           <div className="flex flex-col sm:flex-row gap-4">
             <input
               placeholder="Title"
@@ -168,13 +152,13 @@ export default function Home() {
 
             <button
               onClick={addBookmark}
-              className="bg-[#135E8A] text-white px-6 py-3 rounded-lg hover:bg-[#0E3A5D] shadow-lg transition whitespace-nowrap sm:w-auto w-full"
+              className="bg-[#135E8A] text-white px-6 py-3 rounded-lg hover:bg-[#0E3A5D] shadow-lg transition"
             >
               Add
             </button>
           </div>
 
-          {/* SEARCH */}
+          {/* search */}
           <div className="relative">
             <input
               placeholder="Search bookmarks..."
@@ -186,25 +170,23 @@ export default function Home() {
               🔍
             </span>
           </div>
-
         </div>
       </div>
 
-      {/* ✨ ANIMATIONS */}
+      {/* ✨ CSS ANIMATIONS */}
       <style jsx>{`
-        .animate-fadeIn {
-          animation: fadeIn 0.7s ease;
+        .welcomeText {
+          font-size: 3.5rem;
+          font-weight: 800;
+          background: linear-gradient(90deg, #0a2540, #135e8a, #6b90a8);
+          -webkit-background-clip: text;
+          color: transparent;
+          animation: shimmer 4s linear infinite;
         }
 
-        @keyframes fadeIn {
-          from {
-            opacity: 0;
-            transform: translateY(25px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
+        @keyframes shimmer {
+          0% { background-position: -300px; }
+          100% { background-position: 300px; }
         }
 
         .glow {
@@ -214,7 +196,7 @@ export default function Home() {
           border-radius: 50%;
           filter: blur(140px);
           opacity: 0.35;
-          animation: floatGlow 14s ease-in-out infinite alternate;
+          animation: floatGlow 12s ease-in-out infinite alternate;
         }
 
         .glow1 {
@@ -227,44 +209,18 @@ export default function Home() {
           background: #6b90a8;
           bottom: -140px;
           right: -120px;
-          animation-delay: 4s;
+          animation-delay: 3s;
         }
 
         @keyframes floatGlow {
-          from {
-            transform: translateY(0) translateX(0);
-          }
-          to {
-            transform: translateY(40px) translateX(30px);
-          }
-        }
-
-        .shine {
-          position: absolute;
-          inset: 0;
-          border-radius: 24px;
-          background: linear-gradient(
-            120deg,
-            transparent 40%,
-            rgba(255,255,255,0.25),
-            transparent 60%
-          );
-          opacity: 0.35;
-          animation: shineMove 6s infinite;
-        }
-
-        @keyframes shineMove {
-          from {
-            transform: translateX(-100%);
-          }
-          to {
-            transform: translateX(100%);
-          }
+          from { transform: translateY(0) translateX(0); }
+          to { transform: translateY(40px) translateX(30px); }
         }
       `}</style>
     </div>
   );
 }
+
 
 
 

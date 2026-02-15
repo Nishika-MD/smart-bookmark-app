@@ -11,14 +11,12 @@ export default function Home() {
   const [search, setSearch] = useState("");
   const [dark, setDark] = useState(false);
 
-  // get user session
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
       setUser(data.session?.user);
     });
   }, []);
 
-  // fetch bookmarks
   const fetchBookmarks = async () => {
     if (!user) return;
 
@@ -61,19 +59,17 @@ export default function Home() {
     "px-4 py-3 rounded-lg border w-full outline-none transition placeholder-gray-500 " +
     (dark
       ? "bg-white/5 text-white border-white/10"
-      : "bg-white/80 text-gray-900 border-gray-300");
-
-  /* ================= LOGIN PAGE ================= */
+      : "bg-white/70 text-gray-900 border-gray-300");
 
   if (!user) {
     return (
-      <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-[#083A66] via-[#0E7490] to-[#031B2F]">
+      <div className="h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-[#083A66] via-[#0EA5C6] to-[#0B4F80]">
 
-        {/* glow lights */}
+        {/* aqua glow lights */}
         <div className="glow glow1"></div>
         <div className="glow glow2"></div>
 
-        <div className="loginCard relative z-10 backdrop-blur-xl bg-white/15 border border-white/30 shadow-2xl rounded-3xl p-10 text-center space-y-6 text-white max-w-md animate-fadeIn">
+        <div className="backdrop-blur-xl bg-white/15 border border-white/30 shadow-2xl rounded-3xl p-10 text-center space-y-6 text-white max-w-md animate-fadeIn">
 
           <img
             src="https://cdn-icons-png.flaticon.com/512/5968/5968756.png"
@@ -105,32 +101,30 @@ export default function Home() {
     );
   }
 
-  /* ================= MAIN APP ================= */
-
   return (
     <div
       className={`min-h-screen flex items-center justify-center relative overflow-hidden ${
         dark
           ? "bg-gradient-to-br from-[#020617] via-[#083A66] to-[#031B2F]"
-          : "bg-gradient-to-br from-[#0E7490] via-[#0B5E73] to-[#083A66]"
+          : "bg-gradient-to-br from-[#BFE9FF] via-[#E3F7FF] to-[#F7FDFF]"
       }`}
     >
-      {/* glow lights */}
+      {/* aqua glow background */}
       <div className="glow glow1"></div>
       <div className="glow glow2"></div>
 
       <div className="w-full max-w-xl px-4">
 
-        {/* GLASS CARD */}
+        {/* SKY BLUE GLASS CARD */}
         <div
-          className={`cardGloss relative z-10 rounded-3xl p-10 space-y-8 backdrop-blur-xl border shadow-xl ${
+          className={`rounded-3xl p-10 space-y-8 backdrop-blur-xl border shadow-xl ${
             dark
-              ? "bg-[#083A66]/60 border-white/10 text-white shadow-[0_0_60px_rgba(14,165,198,0.45)]"
-              : "bg-[#CFEFFF]/90 border-white/40 text-gray-900 shadow-[0_0_60px_rgba(14,165,198,0.35)]"
+              ? "bg-[#083A66]/60 border-white/10 text-white shadow-[0_0_40px_rgba(14,165,198,0.35)]"
+              : "bg-[#CFEFFF]/70 border-white/40 text-gray-900 shadow-[0_0_40px_rgba(14,165,198,0.25)]"
           }`}
         >
 
-          {/* Welcome */}
+          {/* Animated Welcome */}
           <div>
             <h1 className="welcomeText">Welcome</h1>
             <p className={dark ? "text-white/80" : "text-[#083A66]"}>
@@ -142,20 +136,20 @@ export default function Home() {
           <div className="flex gap-3">
             <button
               onClick={() => setDark(!dark)}
-              className="px-4 py-2 rounded-lg bg-[#0EA5C6] text-white hover:bg-[#083A66]"
+              className="px-4 py-2 rounded-lg bg-[#0EA5C6] text-white hover:bg-[#083A66] shadow-md"
             >
               {dark ? "Light" : "Dark"}
             </button>
 
             <button
               onClick={logout}
-              className="px-4 py-2 rounded-lg bg-rose-500 text-white hover:bg-rose-600"
+              className="px-4 py-2 rounded-lg bg-rose-500 text-white hover:bg-rose-600 shadow-md"
             >
               Logout
             </button>
           </div>
 
-          {/* Inputs */}
+          {/* Add bookmark */}
           <div className="flex flex-col sm:flex-row gap-4">
             <input
               placeholder="Title"
@@ -173,7 +167,7 @@ export default function Home() {
 
             <button
               onClick={addBookmark}
-              className="bg-[#0EA5C6] text-white px-6 py-3 rounded-lg hover:bg-[#083A66]"
+              className="bg-[#0EA5C6] text-white px-6 py-3 rounded-lg hover:bg-[#083A66] shadow-lg"
             >
               Add
             </button>
@@ -192,13 +186,13 @@ export default function Home() {
             </span>
           </div>
 
-          {/* List */}
+          {/* Bookmarks */}
           <div className="space-y-3">
             {filtered.map((b) => (
               <div
                 key={b.id}
                 className={`flex justify-between items-center px-4 py-3 rounded-xl ${
-                  dark ? "bg-white/10" : "bg-white/90"
+                  dark ? "bg-white/10" : "bg-white/80"
                 }`}
               >
                 <a
@@ -224,82 +218,46 @@ export default function Home() {
         </div>
       </div>
 
-      {/* ================= CSS ================= */}
       <style jsx>{`
-
-        /* welcome shine */
         .welcomeText {
           font-size: 3rem;
-          font-weight: 900;
-          background: linear-gradient(90deg, #ffffff, #7dd3fc, #ffffff);
+          font-weight: 800;
+          background: linear-gradient(90deg, #083a66, #0ea5c6, #9feaff);
           background-size: 200% auto;
           -webkit-background-clip: text;
           color: transparent;
-          animation: shineMove 4s linear infinite;
-          text-shadow:
-            0 0 12px rgba(125,211,252,0.7),
-            0 0 30px rgba(14,165,198,0.45);
+          animation: shine 4s linear infinite;
         }
 
-        @keyframes shineMove {
-          to { background-position: 200% center; }
+        @keyframes shine {
+          to {
+            background-position: 200% center;
+          }
         }
 
-        /* glow lights */
         .glow {
           position: absolute;
           width: 420px;
           height: 420px;
           border-radius: 50%;
           filter: blur(140px);
-          opacity: 0.5;
-          animation: floatGlow 8s ease-in-out infinite alternate;
-          pointer-events: none;   /* ⭐ prevents blocking clicks */
-          z-index: 0;
+          opacity: 0.4;
         }
 
         .glow1 {
-          background: rgba(14,165,198,0.6);
+          background: rgba(14,165,198,0.5);
           top: -120px;
           left: -120px;
         }
 
         .glow2 {
-          background: rgba(159,234,255,0.6);
+          background: rgba(159,234,255,0.5);
           bottom: -140px;
           right: -120px;
         }
 
-        @keyframes floatGlow {
-          from { transform: translateY(0px); }
-          to { transform: translateY(40px); }
-        }
-
-        /* glass shine reflection */
-        .cardGloss::before {
-          content: "";
-          position: absolute;
-          inset: 0;
-          background: linear-gradient(
-            120deg,
-            transparent 30%,
-            rgba(255,255,255,0.4),
-            transparent 70%
-          );
-          opacity: 0;
-          transition: opacity 0.6s ease;
-        }
-
-        .cardGloss:hover::before {
-          opacity: 1;
-        }
-
-        .loginCard {
-          box-shadow: 0 0 70px rgba(14,165,198,0.35);
-        }
-
         .animate-fadeIn {
-          animation: fadeIn 0.8s ease;
+          animation: fadeIn 1s ease;
         }
 
         @keyframes fadeIn {
@@ -310,6 +268,7 @@ export default function Home() {
     </div>
   );
 }
+
 
 
 

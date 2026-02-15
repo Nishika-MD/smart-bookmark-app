@@ -20,6 +20,55 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+# 🔖 Smart Bookmark App
+
+A modern bookmark manager that helps users save, organize, and access links securely from anywhere.
+
+🌐 **Live App:** https://smart-bookmark-app-seven-kappa.vercel.app  
+💻 **GitHub Repo:** https://github.com/Nishika-MD/smart-bookmark-app
+
+---
+
+## ✨ Features
+
+✅ Google Authentication (Supabase OAuth)  
+✅ Add & delete bookmarks  
+✅ Search bookmarks instantly  
+✅ Auto favicon preview  
+✅ Dark / Light mode toggle  
+✅ Responsive & modern UI  
+✅ Secure user-specific data storage  
+
+---
+
+## 🛠️ Tech Stack
+
+- **Next.js 14**
+- **React**
+- **Supabase (Auth + Database)**
+- **Tailwind CSS**
+- **Vercel (Deployment)**
+
+---
+
+## 🚧 Challenges & Solutions
+
+### 🔹 OAuth Redirect Issues
+While implementing Google login, the app redirected incorrectly after authentication.
+
+**Solution:**  
+Configured correct redirect URLs in Supabase and ensured environment variables were properly set.
+
+---
+
+### 🔹 Environment Variables Not Loading
+Supabase client threw errors when keys were missing.
+
+**Solution:**  
+Created `.env.local` and added required keys:
+
+
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:

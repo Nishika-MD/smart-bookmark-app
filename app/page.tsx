@@ -83,8 +83,10 @@ export default function Home() {
     <div
       className={`min-h-screen flex items-center justify-center transition duration-500 ${
         dark
-          ? "bg-gradient-to-br from-[#0A2540] via-[#0E3A5D] to-[#0A2540]"
-          : "bg-gradient-to-br from-[#EAF2F7] via-white to-[#F4F8FB]"
+         dark
+  ? "bg-gradient-to-br from-[#0A2540] via-[#0E3A5D] to-[#0A2540]"
+  : "bg-gradient-to-br from-[#E6F2F7] via-[#F0F8FB] to-white"
+
       }`}
     >
       <div className="w-full max-w-xl px-4 animate-fadeIn">

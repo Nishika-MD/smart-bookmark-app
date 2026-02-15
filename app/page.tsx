@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabaseClient";
-import toast, { Toaster } from "react-hot-toast";
+
 
 export default function Home() {
   const [user, setUser] = useState<any>(null);

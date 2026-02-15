@@ -61,17 +61,17 @@ export default function Home() {
       ? "bg-white/5 text-white border-white/10"
       : "bg-white/80 text-gray-900 border-gray-300");
 
-  // ⭐ LOGIN PAGE
+  /* ================= LOGIN PAGE ================= */
+
   if (!user) {
     return (
-      <div className="h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-[#083A66] via-[#0B5E73] to-[#062A3A]">
+      <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-[#083A66] via-[#0E7490] to-[#031B2F]">
 
-        {/* glow */}
+        {/* glowing lights */}
         <div className="glow glow1"></div>
         <div className="glow glow2"></div>
 
-        {/* lighter card for contrast */}
-        <div className="backdrop-blur-xl bg-white/15 border border-white/30 shadow-2xl rounded-3xl p-10 text-center space-y-6 text-white max-w-md animate-fadeIn">
+        <div className="loginCard backdrop-blur-xl bg-white/15 border border-white/30 shadow-2xl rounded-3xl p-10 text-center space-y-6 text-white max-w-md animate-fadeIn">
 
           <img
             src="https://cdn-icons-png.flaticon.com/512/5968/5968756.png"
@@ -103,29 +103,32 @@ export default function Home() {
     );
   }
 
+  /* ================= MAIN APP ================= */
+
   return (
     <div
       className={`min-h-screen flex items-center justify-center relative overflow-hidden ${
         dark
           ? "bg-gradient-to-br from-[#020617] via-[#083A66] to-[#031B2F]"
-          : "bg-gradient-to-br from-[#0B5E73] via-[#0E7C91] to-[#083A66]"
+          : "bg-gradient-to-br from-[#0E7490] via-[#0B5E73] to-[#083A66]"
       }`}
     >
-      {/* glow */}
+      {/* animated glow lights */}
       <div className="glow glow1"></div>
       <div className="glow glow2"></div>
 
       <div className="w-full max-w-xl px-4">
 
-        {/* CARD (lighter for contrast) */}
+        {/* GLASS CARD */}
         <div
-          className={`rounded-3xl p-10 space-y-8 backdrop-blur-xl border shadow-xl ${
+          className={`cardGloss relative rounded-3xl p-10 space-y-8 backdrop-blur-xl border shadow-xl ${
             dark
-              ? "bg-[#083A66]/60 border-white/10 text-white shadow-[0_0_40px_rgba(14,165,198,0.35)]"
-              : "bg-[#CFEFFF]/85 border-white/40 text-gray-900 shadow-[0_0_40px_rgba(14,165,198,0.25)]"
+              ? "bg-[#083A66]/60 border-white/10 text-white shadow-[0_0_50px_rgba(14,165,198,0.45)]"
+              : "bg-[#CFEFFF]/90 border-white/40 text-gray-900 shadow-[0_0_50px_rgba(14,165,198,0.35)]"
           }`}
         >
 
+          {/* Welcome */}
           <div>
             <h1 className="welcomeText">Welcome</h1>
             <p className={dark ? "text-white/80" : "text-[#083A66]"}>
@@ -133,6 +136,7 @@ export default function Home() {
             </p>
           </div>
 
+          {/* Buttons */}
           <div className="flex gap-3">
             <button
               onClick={() => setDark(!dark)}
@@ -149,6 +153,7 @@ export default function Home() {
             </button>
           </div>
 
+          {/* Inputs */}
           <div className="flex flex-col sm:flex-row gap-4">
             <input
               placeholder="Title"
@@ -172,6 +177,7 @@ export default function Home() {
             </button>
           </div>
 
+          {/* Search */}
           <div className="relative">
             <input
               placeholder="Search bookmarks..."
@@ -184,6 +190,7 @@ export default function Home() {
             </span>
           </div>
 
+          {/* List */}
           <div className="space-y-3">
             {filtered.map((b) => (
               <div
@@ -215,38 +222,80 @@ export default function Home() {
         </div>
       </div>
 
+      {/* ================= STYLES ================= */}
       <style jsx>{`
+
+        /* Welcome Shine */
         .welcomeText {
           font-size: 3rem;
-          font-weight: 800;
-          background: linear-gradient(90deg, #ffffff, #9feaff);
+          font-weight: 900;
+          background: linear-gradient(90deg, #ffffff, #9feaff, #ffffff);
+          background-size: 200% auto;
           -webkit-background-clip: text;
           color: transparent;
+          animation: shineMove 4s linear infinite;
+          text-shadow: 0 0 18px rgba(159,234,255,0.35);
         }
 
+        @keyframes shineMove {
+          to {
+            background-position: 200% center;
+          }
+        }
+
+        /* Floating glow */
         .glow {
           position: absolute;
           width: 420px;
           height: 420px;
           border-radius: 50%;
           filter: blur(140px);
-          opacity: 0.4;
+          opacity: 0.45;
+          animation: floatGlow 8s ease-in-out infinite alternate;
         }
 
         .glow1 {
-          background: rgba(14,165,198,0.5);
+          background: rgba(14,165,198,0.6);
           top: -120px;
           left: -120px;
         }
 
         .glow2 {
-          background: rgba(159,234,255,0.5);
+          background: rgba(159,234,255,0.6);
           bottom: -140px;
           right: -120px;
         }
 
+        @keyframes floatGlow {
+          from { transform: translateY(0px); }
+          to { transform: translateY(40px); }
+        }
+
+        /* Card gloss reflection */
+        .cardGloss::before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(
+            120deg,
+            transparent 30%,
+            rgba(255,255,255,0.4),
+            transparent 70%
+          );
+          opacity: 0;
+          transition: opacity 0.6s ease;
+        }
+
+        .cardGloss:hover::before {
+          opacity: 1;
+        }
+
+        .loginCard {
+          box-shadow: 0 0 60px rgba(14,165,198,0.25);
+        }
+
         .animate-fadeIn {
-          animation: fadeIn 1s ease;
+          animation: fadeIn 0.8s ease;
         }
 
         @keyframes fadeIn {
@@ -257,6 +306,7 @@ export default function Home() {
     </div>
   );
 }
+
 
 
 

@@ -54,29 +54,19 @@ export default function Home() {
     location.reload();
   };
 
-  // ⭐ AI-like smart title suggestion
-  const suggestTitle = async () => {
-    if (!url) return;
-    try {
-      const res = await fetch(`https://textance.herokuapp.com/title/${url}`);
-      const text = await res.text();
-      if (text) setTitle(text);
-    } catch (err) {}
-  };
-
   const filtered = bookmarks.filter((b) =>
     b.title.toLowerCase().includes(search.toLowerCase())
   );
 
   const inputStyle =
-    "px-4 py-3 rounded-lg border w-full outline-none transition placeholder-gray-500 " +
+    "px-4 py-3 rounded-lg border w-full outline-none transition placeholder-opacity-100 " +
     (dark
-      ? "bg-slate-800 text-white border-slate-600 focus:ring-2 focus:ring-indigo-400"
-      : "bg-gray-100 text-gray-900 border-gray-300 focus:ring-2 focus:ring-indigo-500");
+      ? "bg-white/5 text-white border-white/10 placeholder-gray-400 focus:ring-2 focus:ring-indigo-400"
+      : "bg-white/70 text-gray-900 border-gray-300 placeholder-gray-500 focus:ring-2 focus:ring-indigo-500");
 
   if (!user) {
     return (
-      <div className="h-screen flex items-center justify-center bg-gradient-to-br from-indigo-500 via-purple-500 to-blue-500">
+      <div className="h-screen flex items-center justify-center bg-gradient-to-br from-indigo-600 via-purple-600 to-blue-600">
         <button
           onClick={() =>
             supabase.auth.signInWithOAuth({ provider: "google" })
@@ -93,30 +83,30 @@ export default function Home() {
     <div
       className={`min-h-screen flex items-center justify-center transition duration-500 ${
         dark
-          ? "bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800"
-          : "bg-gradient-to-br from-indigo-50 via-purple-50 to-blue-50"
+          ? "bg-gradient-to-br from-[#0f172a] via-[#020617] to-[#020617]"
+          : "bg-gradient-to-br from-[#eef2ff] via-white to-[#f8fafc]"
       }`}
     >
       <div className="w-full max-w-xl px-4 animate-fadeIn">
 
-        {/* MAIN CARD */}
+        {/* MAIN GLASS CARD */}
         <div
-          className={`rounded-2xl p-6 shadow-xl hover:shadow-2xl hover:-translate-y-1 transition duration-300 ${
+          className={`rounded-2xl p-8 space-y-6 backdrop-blur-xl border transition duration-300 ${
             dark
-              ? "bg-slate-800 text-white border border-slate-700"
-              : "bg-white text-gray-900 border border-gray-200"
+              ? "bg-white/5 border-white/10 shadow-[0_0_25px_rgba(99,102,241,0.15)] text-white"
+              : "bg-white/70 border-white/60 shadow-xl text-gray-900"
           }`}
         >
 
           {/* HEADER */}
           <div
-            className={`flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 px-5 py-4 rounded-xl mb-6 border ${
+            className={`flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 px-6 py-5 rounded-xl border ${
               dark
-                ? "bg-slate-700 border-slate-600"
-                : "bg-indigo-50 border-indigo-100"
+                ? "bg-white/5 border-white/10"
+                : "bg-white/60 border-white/50"
             }`}
           >
-            <h2 className="font-semibold text-lg break-all">
+            <h2 className="font-semibold text-lg leading-relaxed break-words">
               Welcome
               <span
                 className={`ml-2 ${
@@ -127,17 +117,17 @@ export default function Home() {
               </span>
             </h2>
 
-            <div className="flex gap-2">
+            <div className="flex gap-3 shrink-0">
               <button
                 onClick={() => setDark(!dark)}
-                className="px-3 py-1.5 rounded-md bg-indigo-500 text-white hover:bg-indigo-600 transition"
+                className="px-3 py-1.5 rounded-md bg-indigo-500 text-white hover:bg-indigo-600 shadow-md hover:shadow-indigo-500/40 transition"
               >
                 {dark ? "Light" : "Dark"}
               </button>
 
               <button
                 onClick={logout}
-                className="bg-rose-500 text-white px-3 py-1.5 rounded-md hover:bg-rose-600 transition"
+                className="bg-rose-500 text-white px-3 py-1.5 rounded-md hover:bg-rose-600 shadow-md hover:shadow-rose-500/40 transition"
               >
                 Logout
               </button>
@@ -145,7 +135,7 @@ export default function Home() {
           </div>
 
           {/* INPUT ROW */}
-          <div className="flex flex-col sm:flex-row gap-3 mb-4">
+          <div className="flex flex-col sm:flex-row gap-4">
             <input
               placeholder="Title"
               value={title}
@@ -157,20 +147,19 @@ export default function Home() {
               placeholder="URL"
               value={url}
               onChange={(e) => setUrl(e.target.value)}
-              onBlur={suggestTitle}
               className={inputStyle}
             />
 
             <button
               onClick={addBookmark}
-              className="bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 transition whitespace-nowrap sm:w-auto w-full"
+              className="bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 shadow-lg hover:shadow-indigo-500/40 transition whitespace-nowrap sm:w-auto w-full"
             >
               Add
             </button>
           </div>
 
           {/* SEARCH */}
-          <div className="relative mb-5">
+          <div className="relative">
             <input
               placeholder="Search bookmarks..."
               value={search}
@@ -187,10 +176,10 @@ export default function Home() {
             {filtered.map((b) => (
               <div
                 key={b.id}
-                className={`flex justify-between items-center px-4 py-3 rounded-lg shadow-sm hover:scale-[1.01] transition ${
+                className={`flex justify-between items-center px-4 py-3 rounded-lg border transition ${
                   dark
-                    ? "bg-slate-700"
-                    : "bg-white border border-gray-200"
+                    ? "bg-white/5 border-white/10 hover:bg-white/10"
+                    : "bg-white border-gray-200 hover:shadow-md"
                 }`}
               >
                 <div className="flex items-center gap-3 overflow-hidden">
@@ -201,24 +190,27 @@ export default function Home() {
                   <a
                     href={b.url}
                     target="_blank"
-                    className="font-medium hover:underline truncate"
+                    className="font-medium truncate hover:text-indigo-500 transition"
                   >
                     {b.title}
                   </a>
                 </div>
 
-                <div className="flex gap-4 text-sm">
+                <div className="flex gap-4 text-lg">
                   <button
                     onClick={() => navigator.clipboard.writeText(b.url)}
-                    className="text-gray-500 hover:text-indigo-500"
+                    className="text-gray-400 hover:text-indigo-500 transition"
+                    title="Copy"
                   >
-                    Copy
+                    📋
                   </button>
+
                   <button
                     onClick={() => deleteBookmark(b.id)}
-                    className="text-red-500"
+                    className="text-gray-400 hover:text-rose-500 transition"
+                    title="Delete"
                   >
-                    Delete
+                    🗑
                   </button>
                 </div>
               </div>
@@ -228,7 +220,7 @@ export default function Home() {
         </div>
       </div>
 
-      {/* simple fade animation */}
+      {/* FADE ANIMATION */}
       <style jsx>{`
         .animate-fadeIn {
           animation: fadeIn 0.6s ease;
@@ -247,6 +239,7 @@ export default function Home() {
     </div>
   );
 }
+
 
 
 

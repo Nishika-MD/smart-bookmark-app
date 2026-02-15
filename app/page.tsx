@@ -243,7 +243,10 @@ export default function Home() {
     0 0 10px rgba(14,165,198,0.7),
     0 0 25px rgba(8,58,102,0.5);
 }
-
+@keyframes darkBlueShine {
+  0% { background-position: 0% center; }
+  100% { background-position: 300% center; }
+}
 
 
         @keyframes shine {

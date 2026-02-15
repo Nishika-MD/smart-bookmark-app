@@ -81,60 +81,76 @@ export default function Home() {
 
   return (
     <div
-      className={`min-h-screen flex items-center justify-center transition duration-500 ${
+      className={`min-h-screen flex items-center justify-center transition duration-500 relative overflow-hidden ${
         dark
-         dark
-  ? "bg-gradient-to-br from-[#0A2540] via-[#0E3A5D] to-[#0A2540]"
-  : "bg-gradient-to-br from-[#E6F2F7] via-[#F0F8FB] to-white"
-
+          ? "bg-gradient-to-br from-[#0A2540] via-[#0E3A5D] to-[#020617]"
+          : "bg-gradient-to-br from-[#E6F2F7] via-[#DCEFF6] to-[#F8FDFF]"
       }`}
     >
-      <div className="w-full max-w-xl px-4 animate-fadeIn">
+      {/* 🌊 Animated aqua glow */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="glow glow1"></div>
+        <div className="glow glow2"></div>
+      </div>
+
+      <div className="w-full max-w-xl px-4 animate-fadeIn relative">
 
         {/* GLASS CARD */}
         <div
-          className={`rounded-3xl p-10 space-y-8 backdrop-blur-xl border transition ${
+          className={`relative rounded-3xl p-10 space-y-8 backdrop-blur-xl border transition transform hover:-translate-y-2 hover:scale-[1.01] ${
             dark
-              ? "bg-white/5 border-white/10 shadow-[0_0_35px_rgba(19,94,138,0.35)] text-white"
-              : "bg-white/80 border-white/60 shadow-xl text-gray-900"
+              ? "bg-white/5 border-white/10 shadow-[0_30px_80px_rgba(19,94,138,0.35)] text-white"
+              : "bg-white/80 border-white/60 shadow-[0_30px_80px_rgba(19,94,138,0.18)] text-gray-900"
           }`}
         >
+          {/* ✨ Glass shine reflection */}
+          <div className="shine"></div>
 
-          {/* BIG STYLISH WELCOME */}
-          <div className="space-y-2">
-            <h1 className={`text-3xl sm:text-4xl font-bold tracking-tight ${
-              dark ? "text-white" : "text-[#0A2540]"
-            }`}>
+          {/* 🏆 HERO HEADER */}
+          <div className="space-y-3 pb-3 border-b border-white/20">
+
+            {/* 🔷 Logo Branding */}
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#135E8A] to-[#0E3A5D] flex items-center justify-center text-white font-bold text-lg shadow-md">
+                SB
+              </div>
+              <span className="font-semibold tracking-wide text-sm opacity-80">
+                Smart Bookmark
+              </span>
+            </div>
+
+            <h1
+              className={`text-5xl sm:text-6xl font-extrabold tracking-tight leading-tight bg-gradient-to-r from-[#0A2540] to-[#135E8A] bg-clip-text text-transparent ${
+                dark && "drop-shadow-[0_0_12px_rgba(19,94,138,0.6)]"
+              }`}
+            >
               Welcome
             </h1>
 
-            <p className={`text-lg sm:text-xl font-medium break-words ${
-              dark ? "text-[#B8CAD6]" : "text-[#135E8A]"
-            }`}>
+            <p className={`${dark ? "text-[#B8CAD6]" : "text-[#0E3A5D]"} text-lg`}>
               {user.email}
             </p>
+
           </div>
 
-          {/* CONTROLS */}
-          <div className="flex justify-between items-center flex-wrap gap-3">
-            <div className="flex gap-3">
-              <button
-                onClick={() => setDark(!dark)}
-                className="px-4 py-2 rounded-lg bg-[#135E8A] text-white hover:bg-[#0E3A5D] shadow-md transition"
-              >
-                {dark ? "Light" : "Dark"}
-              </button>
+          {/* BUTTONS */}
+          <div className="flex gap-3">
+            <button
+              onClick={() => setDark(!dark)}
+              className="px-4 py-2 rounded-lg bg-[#135E8A] text-white hover:bg-[#0E3A5D] shadow-md transition"
+            >
+              {dark ? "Light" : "Dark"}
+            </button>
 
-              <button
-                onClick={logout}
-                className="px-4 py-2 rounded-lg bg-rose-500 text-white hover:bg-rose-600 shadow-md transition"
-              >
-                Logout
-              </button>
-            </div>
+            <button
+              onClick={logout}
+              className="px-4 py-2 rounded-lg bg-rose-500 text-white hover:bg-rose-600 shadow-md transition"
+            >
+              Logout
+            </button>
           </div>
 
-          {/* INPUT ROW */}
+          {/* INPUTS */}
           <div className="flex flex-col sm:flex-row gap-4">
             <input
               placeholder="Title"
@@ -171,58 +187,15 @@ export default function Home() {
             </span>
           </div>
 
-          {/* BOOKMARK LIST */}
-          <div className="space-y-3">
-            {filtered.map((b) => (
-              <div
-                key={b.id}
-                className={`flex justify-between items-center px-4 py-3 rounded-xl border transition ${
-                  dark
-                    ? "bg-white/5 border-white/10 hover:bg-white/10"
-                    : "bg-white border-gray-200 hover:shadow-md"
-                }`}
-              >
-                <div className="flex items-center gap-3 overflow-hidden">
-                  <img
-                    src={`https://www.google.com/s2/favicons?domain=${b.url}`}
-                    className="w-5 h-5"
-                  />
-                  <a
-                    href={b.url}
-                    target="_blank"
-                    className="font-medium truncate hover:text-[#135E8A] transition"
-                  >
-                    {b.title}
-                  </a>
-                </div>
-
-                <div className="flex gap-4 text-lg">
-                  <button
-                    onClick={() => navigator.clipboard.writeText(b.url)}
-                    className="text-gray-400 hover:text-[#135E8A] transition"
-                  >
-                    📋
-                  </button>
-
-                  <button
-                    onClick={() => deleteBookmark(b.id)}
-                    className="text-gray-400 hover:text-rose-500 transition"
-                  >
-                    🗑
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-
         </div>
       </div>
 
-      {/* FADE ANIMATION */}
+      {/* ✨ ANIMATIONS */}
       <style jsx>{`
         .animate-fadeIn {
-          animation: fadeIn 0.6s ease;
+          animation: fadeIn 0.7s ease;
         }
+
         @keyframes fadeIn {
           from {
             opacity: 0;
@@ -233,10 +206,66 @@ export default function Home() {
             transform: translateY(0);
           }
         }
+
+        .glow {
+          position: absolute;
+          width: 420px;
+          height: 420px;
+          border-radius: 50%;
+          filter: blur(140px);
+          opacity: 0.35;
+          animation: floatGlow 14s ease-in-out infinite alternate;
+        }
+
+        .glow1 {
+          background: #135e8a;
+          top: -120px;
+          left: -120px;
+        }
+
+        .glow2 {
+          background: #6b90a8;
+          bottom: -140px;
+          right: -120px;
+          animation-delay: 4s;
+        }
+
+        @keyframes floatGlow {
+          from {
+            transform: translateY(0) translateX(0);
+          }
+          to {
+            transform: translateY(40px) translateX(30px);
+          }
+        }
+
+        .shine {
+          position: absolute;
+          inset: 0;
+          border-radius: 24px;
+          background: linear-gradient(
+            120deg,
+            transparent 40%,
+            rgba(255,255,255,0.25),
+            transparent 60%
+          );
+          opacity: 0.35;
+          animation: shineMove 6s infinite;
+        }
+
+        @keyframes shineMove {
+          from {
+            transform: translateX(-100%);
+          }
+          to {
+            transform: translateX(100%);
+          }
+        }
       `}</style>
     </div>
   );
 }
+
 
 
 

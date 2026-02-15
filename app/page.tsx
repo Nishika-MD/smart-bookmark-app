@@ -61,17 +61,17 @@ export default function Home() {
   const inputStyle =
     "px-4 py-3 rounded-lg border w-full outline-none transition placeholder-opacity-100 " +
     (dark
-      ? "bg-white/5 text-white border-white/10 placeholder-gray-400 focus:ring-2 focus:ring-indigo-400"
-      : "bg-white/70 text-gray-900 border-gray-300 placeholder-gray-500 focus:ring-2 focus:ring-indigo-500");
+      ? "bg-white/5 text-white border-white/10 placeholder-gray-400 focus:ring-2 focus:ring-[#6B90A8]"
+      : "bg-white/80 text-gray-900 border-gray-300 placeholder-gray-500 focus:ring-2 focus:ring-[#135E8A]");
 
   if (!user) {
     return (
-      <div className="h-screen flex items-center justify-center bg-gradient-to-br from-indigo-600 via-purple-600 to-blue-600">
+      <div className="h-screen flex items-center justify-center bg-[#0A2540]">
         <button
           onClick={() =>
             supabase.auth.signInWithOAuth({ provider: "google" })
           }
-          className="bg-black text-white px-6 py-3 rounded-lg text-lg hover:scale-105 transition"
+          className="bg-white text-[#0A2540] px-6 py-3 rounded-lg text-lg hover:scale-105 transition"
         >
           Sign in with Google
         </button>
@@ -83,51 +83,49 @@ export default function Home() {
     <div
       className={`min-h-screen flex items-center justify-center transition duration-500 ${
         dark
-          ? "bg-gradient-to-br from-[#0f172a] via-[#020617] to-[#020617]"
-          : "bg-gradient-to-br from-[#eef2ff] via-white to-[#f8fafc]"
+          ? "bg-gradient-to-br from-[#0A2540] via-[#0E3A5D] to-[#0A2540]"
+          : "bg-gradient-to-br from-[#EAF2F7] via-white to-[#F4F8FB]"
       }`}
     >
       <div className="w-full max-w-xl px-4 animate-fadeIn">
 
-        {/* MAIN GLASS CARD */}
+        {/* GLASS CARD */}
         <div
-          className={`rounded-2xl p-8 space-y-6 backdrop-blur-xl border transition duration-300 ${
+          className={`rounded-3xl p-10 space-y-8 backdrop-blur-xl border transition ${
             dark
-              ? "bg-white/5 border-white/10 shadow-[0_0_25px_rgba(99,102,241,0.15)] text-white"
-              : "bg-white/70 border-white/60 shadow-xl text-gray-900"
+              ? "bg-white/5 border-white/10 shadow-[0_0_35px_rgba(19,94,138,0.35)] text-white"
+              : "bg-white/80 border-white/60 shadow-xl text-gray-900"
           }`}
         >
 
-          {/* HEADER */}
-          <div
-            className={`flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 px-6 py-5 rounded-xl border ${
-              dark
-                ? "bg-white/5 border-white/10"
-                : "bg-white/60 border-white/50"
-            }`}
-          >
-            <h2 className="font-semibold text-lg leading-relaxed break-words">
+          {/* BIG STYLISH WELCOME */}
+          <div className="space-y-2">
+            <h1 className={`text-3xl sm:text-4xl font-bold tracking-tight ${
+              dark ? "text-white" : "text-[#0A2540]"
+            }`}>
               Welcome
-              <span
-                className={`ml-2 ${
-                  dark ? "text-indigo-300" : "text-indigo-600"
-                }`}
-              >
-                {user.email}
-              </span>
-            </h2>
+            </h1>
 
-            <div className="flex gap-3 shrink-0">
+            <p className={`text-lg sm:text-xl font-medium break-words ${
+              dark ? "text-[#B8CAD6]" : "text-[#135E8A]"
+            }`}>
+              {user.email}
+            </p>
+          </div>
+
+          {/* CONTROLS */}
+          <div className="flex justify-between items-center flex-wrap gap-3">
+            <div className="flex gap-3">
               <button
                 onClick={() => setDark(!dark)}
-                className="px-3 py-1.5 rounded-md bg-indigo-500 text-white hover:bg-indigo-600 shadow-md hover:shadow-indigo-500/40 transition"
+                className="px-4 py-2 rounded-lg bg-[#135E8A] text-white hover:bg-[#0E3A5D] shadow-md transition"
               >
                 {dark ? "Light" : "Dark"}
               </button>
 
               <button
                 onClick={logout}
-                className="bg-rose-500 text-white px-3 py-1.5 rounded-md hover:bg-rose-600 shadow-md hover:shadow-rose-500/40 transition"
+                className="px-4 py-2 rounded-lg bg-rose-500 text-white hover:bg-rose-600 shadow-md transition"
               >
                 Logout
               </button>
@@ -152,7 +150,7 @@ export default function Home() {
 
             <button
               onClick={addBookmark}
-              className="bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 shadow-lg hover:shadow-indigo-500/40 transition whitespace-nowrap sm:w-auto w-full"
+              className="bg-[#135E8A] text-white px-6 py-3 rounded-lg hover:bg-[#0E3A5D] shadow-lg transition whitespace-nowrap sm:w-auto w-full"
             >
               Add
             </button>
@@ -166,7 +164,7 @@ export default function Home() {
               onChange={(e) => setSearch(e.target.value)}
               className={`${inputStyle} pl-10`}
             />
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#6B90A8]">
               🔍
             </span>
           </div>
@@ -176,7 +174,7 @@ export default function Home() {
             {filtered.map((b) => (
               <div
                 key={b.id}
-                className={`flex justify-between items-center px-4 py-3 rounded-lg border transition ${
+                className={`flex justify-between items-center px-4 py-3 rounded-xl border transition ${
                   dark
                     ? "bg-white/5 border-white/10 hover:bg-white/10"
                     : "bg-white border-gray-200 hover:shadow-md"
@@ -190,7 +188,7 @@ export default function Home() {
                   <a
                     href={b.url}
                     target="_blank"
-                    className="font-medium truncate hover:text-indigo-500 transition"
+                    className="font-medium truncate hover:text-[#135E8A] transition"
                   >
                     {b.title}
                   </a>
@@ -199,8 +197,7 @@ export default function Home() {
                 <div className="flex gap-4 text-lg">
                   <button
                     onClick={() => navigator.clipboard.writeText(b.url)}
-                    className="text-gray-400 hover:text-indigo-500 transition"
-                    title="Copy"
+                    className="text-gray-400 hover:text-[#135E8A] transition"
                   >
                     📋
                   </button>
@@ -208,7 +205,6 @@ export default function Home() {
                   <button
                     onClick={() => deleteBookmark(b.id)}
                     className="text-gray-400 hover:text-rose-500 transition"
-                    title="Delete"
                   >
                     🗑
                   </button>
@@ -228,7 +224,7 @@ export default function Home() {
         @keyframes fadeIn {
           from {
             opacity: 0;
-            transform: translateY(20px);
+            transform: translateY(25px);
           }
           to {
             opacity: 1;
@@ -239,6 +235,7 @@ export default function Home() {
     </div>
   );
 }
+
 
 
 
